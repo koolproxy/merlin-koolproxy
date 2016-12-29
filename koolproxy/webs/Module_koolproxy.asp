@@ -121,7 +121,7 @@ function checkCmdRet2(){
 }
 
 function done_validating(action) {
-	return ok;
+	return true;
 }
 
 
