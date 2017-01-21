@@ -1,5 +1,5 @@
-!x  -----update[rules]:  2017-1-5 22:22 --- by <houzi> <today2004>
-!x  -----update[video]:  2016-12-25 18:23 --- by <houzi> <today2004>
+!x  -----update[rules]:  2017-1-18 11:28 --- by <houzi> <today2004>
+!x  -----update[video]:  2017-1-17 23:11 --- by <houzi> <today2004>
 !x  -----base: adblock <koolproxy dedicated>
 !x  -----thanks: xwhyc CJX yiclear adsafe
 !x  -------------------------------------- white rules ---------------------------------------------
@@ -55,7 +55,6 @@
 @@|http://*/mygg/sagg$image
 @@|http://33.autohome.com.cn/njs/10055.js?timestamp=
 @@|http://33.autohome.com.cn/njs/newget.js?r=
-@@|http://ad.doubleclick.net/
 @@|http://ad.thsi.cn/siteHome/*.txt
 @@|http://afp.acs86.com/a.htm?pv=$domain=imgo.tv
 @@|http://afp.acs86.com/crossdomain.xml$domain=imgo.tv
@@ -157,8 +156,8 @@
 @@||eiv.baidu.com/fcimg
 @@||gamediad.com:7990
 @@||msn.wrating.com
-@@||player.letvcdn.com*/newplayer/*.swf
-@@||player.letvcdn.com/*/letvPlayer.swf
+!@@||player.letvcdn.com*/newplayer/*.swf
+!@@||player.letvcdn.com/*/letvPlayer.swf
 @@||res.yyets.com/ads/mediav-250.js
 @@||share.dmhy.org/images/$image
 @@||sozi.cn/images/ad/tj*.gif$image
@@ -3859,6 +3858,22 @@
 |http://*_gg.js|
 |http://*_index_ad_
 |http://*_right_ad.$domain=~dzwww.com
+
 !x  -------------------------------------- normal rules ------------------------------------------
+!x  -------------------------------------- https rules ------------------------------------------
+|https://googleads.g.doubleclick.net/pagead/ads?ad_block^
+|https://s.youtube.com^
+|https://content.googleapis.com/youtubei/*/log_interaction?
+|https://www.youtube.com/player_204?^
+|https://www.youtube.com/api/stats/ads?
+|https://youtube.com/ptracking?
+|https://www.google.com/uds/api/ads/*
+|https://googleads.g.doubleclick.net^
+|https://pagead2.googlesyndication.com
+|https://www.googletagservices.com^$third-party
+|https://ad.doubleclick.net^$~object-subrequest,third-party
+|https://*.doubleclick.net^$third-party,domain=3news.co.nz|92q.com|abc-7.com|addictinggames.com|allbusiness.com|bizjournals.com|bloomberg.com|bnn.ca|boom92houston.com|boom945.com|boomphilly.com|break.com|cbc.ca|cbs19.tv|cbs3springfield.com|cbslocal.com|complex.com|dailymail.co.uk|darkhorizons.com|doubleviking.com|euronews.com|extratv.com|fandango.com|fox19.com|fox5vegas.com|gorillanation.com|hawaiinewsnow.com|hellobeautiful.com|hiphopnc.com|hot1041stl.com|hothiphopdetroit.com|hotspotatl.com|hulu.com|imdb.com|indiatimes.com|indyhiphop.com|ipowerrichmond.com|joblo.com|kcra.com|kctv5.com|ketv.com|koat.com|koco.com|kolotv.com|kpho.com|kptv.com|ksat.com|ksbw.com|ksfy.com|ksl.com|kypost.com|kysdc.com|live5news.com|livestation.com|livestream.com|metro.us|metronews.ca|miamiherald.com|my9nj.com|myboom1029.com|mycolumbuspower.com|nbcrightnow.com|neatorama.com|necn.com|neopets.com|news.com.au|news4jax.com|newsone.com|nintendoeverything.com|oldschoolcincy.com|pagesuite-professional.co.uk|pandora.com|play.it|player.theplatform.com|radio.com|radionowindy.com|rottentomatoes.com|sbsun.com|shacknews.com|sk-gaming.com|ted.com|thebeatdfw.com|theboxhouston.com|theglobeandmail.com|timesnow.tv|tv2.no|twitch.tv|ustream.tv|wapt.com|washingtonpost.com|wate.com|wbaltv.com|wcvb.com|wdrb.com|wdsu.com|wflx.com|wfmz.com|wfsb.com|wgal.com|whdh.com|wired.com|wisn.com|wiznation.com|wlky.com|wlns.com|wlwt.com|wmur.com|wnem.com|wowt.com|wral.com|wsj.com|wsmv.com|wsvn.com|wtae.com|wthr.com|wxii12.com|wyff4.com|yahoo.com|youtube-nocookie.com|youtube.com|zhiphopcleveland.com
+|https://*/pagead/lvz^
+!x  -------------------------------------- https rules ------------------------------------------
 !x  -------------------------------------- css rules ---------------------------------------------
 !x  -------------------------------------- css rules ---------------------------------------------
