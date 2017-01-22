@@ -127,7 +127,8 @@ load_module(){
 
 creat_ipset(){
 	echo_date 创建ipset名单
-	ipset -! create white_kp_list nethash && ipset flush white_kp_list
+	ipset -N white_kp_list nethash
+	ipset -N black_koolproxy iphash
 }
 
 add_white_black_ip(){
@@ -135,8 +136,10 @@ add_white_black_ip(){
 	ip_lan="0.0.0.0/8 10.0.0.0/8 100.64.0.0/10 127.0.0.0/8 169.254.0.0/16 172.16.0.0/12 192.168.0.0/16 224.0.0.0/4 240.0.0.0/4 $ip1.0.0/16"
 	for ip in $ip_lan
 	do
-		ipset -! add white_kp_list $ip >/dev/null 2>&1
+		ipset -A white_kp_list $ip >/dev/null 2>&1
+
 	done
+	ipset -A black_koolproxy 110.110.110.110 >/dev/null 2>&1
 }
 
 get_mode_name() {
@@ -156,10 +159,10 @@ get_mode_name() {
 get_jump_mode(){
 	case "$1" in
 		0)
-			echo "j"
+			echo "-j"
 		;;
 		*)
-			echo "g"
+			echo "-g"
 		;;
 	esac
 }
@@ -211,13 +214,14 @@ lan_acess_control(){
 			[ "$proxy_mode" == "1" ] && ports="80"
 			[ "$proxy_mode" == "2" ] && ports="80,443"
 			echo_date 加载ACL规则：$ipaddr模式为：$(get_mode_name $proxy_mode)
-			iptables -t nat -A KOOLPROXY $(factor $ipaddr "-s") -p tcp $(factor $ports "-m multiport --dport") -$(get_jump_mode $proxy_mode) $(get_action_chain $proxy_mode)
+			iptables -t nat -A KOOLPROXY $(factor $ipaddr "-s") -p tcp $(get_jump_mode $proxy_mode) $(get_action_chain $proxy_mode)
 		done
 		echo_date 加载ACL规则：其余主机模式为：$(get_mode_name $koolproxy_acl_default_mode)
 		
 	else
 		echo_date 加载ACL规则：所有模式为：$(get_mode_name $koolproxy_acl_default_mode)
 	fi
+
 }
 
 load_nat(){
@@ -240,26 +244,16 @@ load_nat(){
 	# 创建KOOLPROXY nat rule
 	iptables -t nat -N KOOLPROXY
 	# 局域网地址不走KP
-	iptables -t nat -A KOOLPROXY -p tcp -m set --match-set white_kp_list dst -j RETURN
-	#-----------------------FOR GLOABLE and video mode---------------------
-	# 创建KOOLPROXY_HTTP模式nat rule
+	iptables -t nat -A KOOLPROXY -m set --match-set white_kp_list dst -j RETURN
+	#  生成对应CHAIN
 	iptables -t nat -N KOOLPROXY_HTTP
-	# 全局模式和视频模式
-	[ "$koolproxy_policy" == "1" ] || [ "$koolproxy_policy" == "3" ] && iptables -t nat -A KOOLPROXY_HTTP -p tcp -j REDIRECT --to-ports 3000
-	# ipset 黑名单模式
-	[ "$koolproxy_policy" == "2" ] && iptables -t nat -A KOOLPROXY_HTTP -p tcp -m set --match-set black_koolproxy dst REDIRECT --to-ports 3000
-	#-----------------------FOR HTTPS---------------------
-	# 创建KOOLPROXY_HTTPS模式nat rule
+	iptables -t nat -A KOOLPROXY_HTTP -p tcp --dport 80 -j REDIRECT --to-ports 3000
 	iptables -t nat -N KOOLPROXY_HTTPS
-	# 全局模式和视频模式
-	[ "$koolproxy_policy" == "1" ] || [ "$koolproxy_policy" == "3" ] && iptables -t nat -A KOOLPROXY_HTTPS -p tcp -j REDIRECT --to-ports 3000
-	# ipset 黑名单模式
-	[ "$koolproxy_policy" == "2" ] && iptables -t nat -A KOOLPROXY_HTTPS -p tcp -m set --match-set black_koolproxy dst REDIRECT --to-ports 3000
+	iptables -t nat -A KOOLPROXY_HTTPS -p tcp -m multiport --dport 80,443 -j REDIRECT --to-ports 3000
 	# 局域网控制
 	lan_acess_control
 	# 剩余流量转发到缺省规则定义的链中
 	iptables -t nat -A KOOLPROXY -p tcp -j $(get_action_chain $koolproxy_acl_default_mode)
-	
 	# 重定所有流量到 KOOLPROXY
 	# 全局模式和视频模式
 	[ "$koolproxy_policy" == "1" ] || [ "$koolproxy_policy" == "3" ] && iptables -t nat -I PREROUTING 2 -p tcp -j KOOLPROXY

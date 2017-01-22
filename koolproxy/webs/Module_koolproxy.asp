@@ -825,7 +825,7 @@ function restore_crt() {
                                                                 <td>
                                                                     <ul style="margin-top:-70px;padding-left:15px;" >
                                                                         <li style="margin-top:-5px;">
-                                                                            <h2 id="push_titile"><em>koolproxy <% dbus_get_def("koolproxy_version", "3.1.1"); %></em></h2>
+                                                                            <h2 id="push_titile"><em>koolproxy <% dbus_get_def("koolproxy_version", "3.1.2"); %></em></h2>
                                                                             <div style="float:auto; width:15px; height:25px;margin-top:-40px;margin-left:680px"><img id="return_btn" onclick="reload_Soft_Center();" align="right" style="cursor:pointer;position:absolute;margin-left:-30px;margin-top:-25px;" title="返回软件中心" src="/images/backprev.png" onMouseOver="this.src='/images/backprevclick.png'" onMouseOut="this.src='/images/backprev.png'"></img></div>
                                                                         </li>
                                                                         <li style="margin-top:-5px;">
