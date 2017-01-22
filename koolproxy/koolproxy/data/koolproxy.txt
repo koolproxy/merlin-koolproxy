@@ -1,4 +1,4 @@
-!x  -----update[rules]:  2017-1-18 11:28 --- by <houzi> <today2004>
+!x  -----update[rules]:  2017-1-22 21:21 --- by <houzi> <today2004>
 !x  -----update[video]:  2017-1-17 23:11 --- by <houzi> <today2004>
 !x  -----base: adblock <koolproxy dedicated>
 !x  -----thanks: xwhyc CJX yiclear adsafe
@@ -9,6 +9,7 @@
 @@|http://$domain=taobao.com|taobao.org|alipay.com|suning.com|51buy.com|ct10000.com|etao.com|hitao.com|paipai.com|189.cn
 @@|http://$domain=banggo.com|pili.com.tw|yunhou.com|voicecloud.cn|xunfei.cn
 @@||a.v.duowan.com/crossdomain.xml$domain=v.huya.com,third-party
+@@||http://i-play.mobile.youku.com^
 @@||adash.m.taobao.com/rest
 @@||game.qq.com^
 @@||v.17173.com/advideo/*.mp4
