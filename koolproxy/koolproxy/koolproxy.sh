@@ -88,7 +88,7 @@ add_ss_event(){
 	start=`dbus list __event__onssstart_|grep koolproxy`
 	if [ -z "$start" ];then
 	echo_date 添加ss事件触发：当ss启用或者重启，重新加载koolproxy的nat规则.
-	dbus event onssstart_koolproxy /koolshare/koolproxy/nat_load.sh
+	dbus event onssstart_koolproxy /koolshare/koolproxy/koolproxy.sh
 	fi
 }
 
