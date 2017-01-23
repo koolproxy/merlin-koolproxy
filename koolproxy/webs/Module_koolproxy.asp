@@ -76,9 +76,9 @@ function init(menu_hook) {
 			x = -1;
 	});
 	$j("#download_cert").click(
-		function() {
-			location.href = "http://110.110.110.110";
-		});
+	function() {
+		location.href = "http://110.110.110.110";
+	});
 }
 
 function generate_options(){
@@ -175,20 +175,24 @@ function buildswitch(){
 		if(document.getElementById('switch').checked){
 			document.form.koolproxy_enable.value = 1;
 			document.getElementById("policy_tr").style.display = "";
+			document.getElementById("host_tr").style.display = "";
 			document.getElementById("kp_status").style.display = "";
 			document.getElementById("rule_update_switch").style.display = "";
 			document.getElementById("auto_reboot_switch").style.display = "";
 			document.getElementById("cert_download_tr").style.display = "";
+			document.getElementById("klloproxy_com").style.display = "";
 			//document.getElementById("cert_uplpad_tr").style.display = "";
 			document.getElementById("ACL_table").style.display = "";
 			document.getElementById("ACL_note").style.display = "";
 		}else{
 			document.form.koolproxy_enable.value = 0;
 			document.getElementById("policy_tr").style.display = "none";
+			document.getElementById("host_tr").style.display = "none";
 			document.getElementById("kp_status").style.display = "none";
 			document.getElementById("rule_update_switch").style.display = "none";
 			document.getElementById("auto_reboot_switch").style.display = "none";
 			document.getElementById("cert_download_tr").style.display = "none";
+			document.getElementById("klloproxy_com").style.display = "none";
 			//document.getElementById("cert_uplpad_tr").style.display = "none";
 			document.getElementById("ACL_table").style.display = "none";
 			document.getElementById("ACL_note").style.display = "none";
@@ -210,6 +214,11 @@ function conf2obj(){
     for (var field in db_koolproxy) {
         $j('#'+field).val(db_koolproxy[field]);
     }
+    if (db_koolproxy["koolproxy_adblock"] == "on"){
+	    $G("koolproxy_adblock").checked = true;
+    }else{
+	    $G("koolproxy_adblock").checked = false;
+    }
 }
 
 function reload_Soft_Center(){
@@ -229,19 +238,23 @@ function update_visibility1(){
 function update_visibility(){
 	if(db_koolproxy["koolproxy_enable"] == "1"){
 		document.getElementById("policy_tr").style.display = "";
+		document.getElementById("host_tr").style.display = "";
 		document.getElementById("rule_update_switch").style.display = "";
 		document.getElementById("kp_status").style.display = "";
 		document.getElementById("auto_reboot_switch").style.display = "";
 		document.getElementById("cert_download_tr").style.display = "";
+		document.getElementById("klloproxy_com").style.display = "";
 		//document.getElementById("cert_uplpad_tr").style.display = "";
 		document.getElementById("ACL_table").style.display = "";
 		document.getElementById("ACL_note").style.display = "";
 	}else{
 		document.getElementById("policy_tr").style.display = "none";
+		document.getElementById("host_tr").style.display = "none";
 		document.getElementById("rule_update_switch").style.display = "none";
 		document.getElementById("kp_status").style.display = "none";
 		document.getElementById("auto_reboot_switch").style.display = "none";
 		document.getElementById("cert_download_tr").style.display = "none";
+		document.getElementById("klloproxy_com").style.display = "none";
 		//document.getElementById("cert_uplpad_tr").style.display = "none";
 		document.getElementById("ACL_table").style.display = "none";
 		document.getElementById("ACL_note").style.display = "none";
@@ -905,6 +918,13 @@ function restore_crt() {
 														<span id="koolproxy_policy_read3" style="display: none;">视频模式和全局过滤类似，但是只加载视频规则，不加载静态规则。</span>
 												</td>
 											</tr>
+											<tr id="host_tr">
+												<th>开启Adblock Plus Host</th>
+												<td>
+													<input id="koolproxy_adblock" name="koolproxy_adblock" type="checkbox">
+													<i>规则数量：<% dbus_get_def("koolproxy_adblock_nu", ""); %>条</i>
+												</td>
+											</tr>
 											<tr id="rule_update_switch">
 												<th>规则自动更新</th>
 												<td>
@@ -977,6 +997,13 @@ function restore_crt() {
 												<td>
 													<input type="button" id="download_cert" class="kp_btn" style="cursor:pointer" value="证书下载">
 													<a class="kp_btn" href="http://koolshare.cn/thread-79889-1-1.html" target="_blank">https过滤使用教程<a>
+												</td>
+											</tr>
+											<tr id="klloproxy_com">
+												<th width="35%">koolproxy交流</th>
+												<td>
+													<a type="button" class="kp_btn" target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d6c8af54e6563126004324b5d8c58aa972e21e04ec6f007679458921587db9b0">加入QQ群</a>
+													<a type="button" class="kp_btn" target="_blank" href="https://t.me/joinchat/AAAAAD-tO7GPvfOU131_vg">加入电报群</a>
 												</td>
 											</tr>
 											<!--
