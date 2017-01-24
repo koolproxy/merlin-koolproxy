@@ -156,7 +156,6 @@ function done_validating(action) {
 	return true;
 }
 
-
 var enable_ss = "<% nvram_get("enable_ss"); %>";
 var enable_soft = "<% nvram_get("enable_soft"); %>";
 function menu_hook(title, tab) {
@@ -214,10 +213,10 @@ function conf2obj(){
     for (var field in db_koolproxy) {
         $j('#'+field).val(db_koolproxy[field]);
     }
-    if (db_koolproxy["koolproxy_adblock"] == "on"){
-	    $G("koolproxy_adblock").checked = true;
+    if (db_koolproxy["koolproxy_adblock"] == "1"){
+	    $G("koolproxy_adblock_chk").checked = true;
     }else{
-	    $G("koolproxy_adblock").checked = false;
+	    $G("koolproxy_adblock_chk").checked = false;
     }
 }
 
@@ -435,6 +434,11 @@ function getACLConfigs() {
 	var params = ["ip", "name", "mode"];
 	for (var field in dict) {
 		var obj = {};
+		if (typeof db_koolproxy[p + "_mac_" + field] == "undefined") {
+			obj["mac"] = '';
+		} else {
+			obj["mac"] = db_koolproxy[p + "_mac_" + field];
+		}
 		for (var i = 0; i < params.length; i++) {
 			var ofield = p + "_" + params[i] + "_" + field;
 			if (typeof db_koolproxy[ofield] == "undefined") {
@@ -459,7 +463,7 @@ function addTr() {
 	var acls = {};
 	var p = "koolproxy_acl";
 	acl_node_max += 1;
-	var params = ["ip", "name", "mode"];
+	var params = ["ip", "name", "mac", "mode"];
 	for (var i = 0; i < params.length; i++) {
 		acls[p + "_" + params[i] + "_" + acl_node_max] = $j('#' + p + "_" + params[i]).val();
 	}
@@ -475,6 +479,7 @@ function addTr() {
 			refresh_acl_table();
 			document.form.koolproxy_acl_name.value = "";
 			document.form.koolproxy_acl_ip.value = "";
+			document.form.koolproxy_acl_mac.value = "";
 			document.form.koolproxy_acl_mode.value = "1";
 		}
 	});
@@ -487,7 +492,7 @@ function delTr(o) {
 	var p = "koolproxy_acl";
 	id = ids[ids.length - 1];
 	var acls = {};
-	var params = ["ip", "name", "mode"];
+	var params = ["ip", "name", "mac", "mode"];
 	for (var i = 0; i < params.length; i++) {
 		acls[p + "_" + params[i] + "_" + id] = "";
 	}
@@ -537,9 +542,14 @@ function refresh_acl_html() {
 	for (var field in acl_confs) {
 		var ac = acl_confs[field];
 		code = code + '<tr>';
-		code = code + '<td>' + ac["ip"] + '</td>';
 		code = code + '<td>';
-		code = code + '<input type="text" placeholder="' + ac["acl_node"] + '号机" id="koolproxy_acl_name_' + ac["acl_node"] + '" name="koolproxy_acl_name_' + ac["acl_node"] + '" class="input_option_2" maxlength="50" style="width:140px;" placeholder="" />';
+		code = code + '<input type="text" placeholder="" id="koolproxy_acl_ip_' + ac["acl_node"] + '" name="koolproxy_acl_ip_' + ac["acl_node"] + '" class="input_option_2" maxlength="50" style="width:140px;" value="' + ac["ip"] + '" />';
+		code = code + '</td>';
+		code = code + '<td>';
+		code = code + '<input type="text" placeholder="" id="koolproxy_acl_mac_' + ac["acl_node"] + '" name="koolproxy_acl_mac_' + ac["acl_node"] + '" class="input_option_2" maxlength="50" style="width:140px;" value="' + ac["mac"] + '" />';
+		code = code + '</td>';
+		code = code + '<td>';
+		code = code + '<input type="text" placeholder="" id="koolproxy_acl_name_' + ac["acl_node"] + '" name="koolproxy_acl_name_' + ac["acl_node"] + '" class="input_option_2" maxlength="50" style="width:140px;" placeholder="" />';
 		code = code + '</td>';
 		code = code + '<td>';
 		code = code + '<select id="koolproxy_acl_mode_' + ac["acl_node"] + '" name="koolproxy_acl_mode_' + ac["acl_node"] + '" style="width:160px;margin:0px 0px 0px 2px;" class="input_option_2">';
@@ -560,6 +570,7 @@ function refresh_acl_html() {
 		code = code + '<td>其它主机</td>';
 	}
 	code = code + '<td>缺省规则</td>';
+	code = code + '<td>缺省规则</td>';
 	code = code + '<td>';
 	code = code + '<select id="koolproxy_acl_default_mode" name="koolproxy_acl_default_mode" style="width:160px;margin:0px 0px 0px 2px;" class="input_option_2";">';
 	code = code + '<option value="1" selected>http only</option>';
@@ -572,9 +583,10 @@ function refresh_acl_html() {
 	code = code + '</tr>';
 	return code;
 }
-function setClientIP(ip , name){
+function setClientIP(ip , name, mac){
 	document.form.koolproxy_acl_ip.value = ip;
 	document.form.koolproxy_acl_name.value = name;
+	document.form.koolproxy_acl_mac.value = mac;
 	hideClients_Block();
 }
 
@@ -655,6 +667,10 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 		code += ', '
 		code += '\''
 		code += clientName;
+		code += '\''
+		code += ', '
+		code += '\''
+		code += clientList[i];
 		code += '\');">';
 		if(clientName.length > 32) {
 			code += clientName.substring(0, 30) + "..";
@@ -738,6 +754,14 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 		document.getElementById(_pullArrowID).style.display = "";
 }
 
+function oncheckclick(obj) {
+	if (obj.checked) {
+		document.form.koolproxy_adblock.value="1";
+	} else {
+		document.form.koolproxy_adblock.value="0";
+	}
+}
+
 /*
 function upload_cert() {
 	if ($G('ss_file').value == "") return false;
@@ -807,6 +831,7 @@ function restore_crt() {
 	<input type="hidden" name="action_script" value=""/>
 	<input type="hidden" name="action_wait" value=""/>
 	<input type="hidden" name="first_time" value=""/>
+	<input type="hidden" id="koolproxy_adblock" name="koolproxy_adblock" value="" />
 	<input type="hidden" id="koolproxy_basic_action" name="koolproxy_basic_action" value="1" />
 	<input type="hidden" name="preferred_lang" id="preferred_lang" value="<% nvram_get("preferred_lang"); %>"/>
 	<input type="hidden" name="SystemCmd" onkeydown="onSubmitCtrl(this, ' Refresh ')" value="koolproxy_config.sh"/>
@@ -838,7 +863,7 @@ function restore_crt() {
                                                                 <td>
                                                                     <ul style="margin-top:-70px;padding-left:15px;" >
                                                                         <li style="margin-top:-5px;">
-                                                                            <h2 id="push_titile"><em>koolproxy <% dbus_get_def("koolproxy_version", "3.1.2"); %></em></h2>
+                                                                            <h2 id="push_titile"><em>koolproxy <% dbus_get_def("koolproxy_version", "3.2.1"); %></em></h2>
                                                                             <div style="float:auto; width:15px; height:25px;margin-top:-40px;margin-left:680px"><img id="return_btn" onclick="reload_Soft_Center();" align="right" style="cursor:pointer;position:absolute;margin-left:-30px;margin-top:-25px;" title="返回软件中心" src="/images/backprev.png" onMouseOver="this.src='/images/backprevclick.png'" onMouseOut="this.src='/images/backprev.png'"></img></div>
                                                                         </li>
                                                                         <li style="margin-top:-5px;">
@@ -921,7 +946,7 @@ function restore_crt() {
 											<tr id="host_tr">
 												<th>开启Adblock Plus Host</th>
 												<td>
-													<input id="koolproxy_adblock" name="koolproxy_adblock" type="checkbox">
+													<input id="koolproxy_adblock_chk" onclick="oncheckclick(this);" type="checkbox">
 													<i>规则数量：<% dbus_get_def("koolproxy_adblock_nu", ""); %>条</i>
 												</td>
 											</tr>
@@ -1022,11 +1047,12 @@ function restore_crt() {
 										<table id="ACL_table" style="margin:10px 0px 0px 0px;" width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable" >
 											<thead>
 											<tr>
-												<td colspan="5">访问控制</td>
+												<td colspan="6">访问控制</td>
 											</tr>
 											</thead>
 													<tr>
 														<th style="width:180px;">主机IP地址</th>
+														<th style="width:160px;">mac地址</th>
 														<th style="width:160px;">主机别名</th>
 														<th style="width:160px;">访问控制</th>
 														<th style="width:60px;">添加/删除</th>
@@ -1036,6 +1062,9 @@ function restore_crt() {
 															<input type="text" maxlength="15" class="input_15_table" id="koolproxy_acl_ip" name="koolproxy_acl_ip" align="left" onkeypress="return validator.isIPAddr(this, event)" style="float:left;"/ autocomplete="off" onClick="hideClients_Block();" autocorrect="off" autocapitalize="off">
 															<img id="pull_arrow" height="14px;" src="images/arrow-down.gif" align="right" onclick="pullLANIPList(this);" title="<#select_IP#>">
 															<div id="ClientList_Block" class="clientlist_dropdown" style="margin-left:2px;margin-top:25px;"></div>
+														</td>
+														<td>
+															<input type="text" id="koolproxy_acl_mac" name="koolproxy_acl_mac" class="ssconfig input_ss_table" maxlength="50" style="width:140px;" placeholder="" />
 														</td>
 														<td>
 															<input type="text" id="koolproxy_acl_name" name="koolproxy_acl_name" class="ssconfig input_ss_table" maxlength="50" style="width:140px;" placeholder="" />
@@ -1056,6 +1085,7 @@ function restore_crt() {
 											<div><i>1&nbsp;&nbsp;如果你为某台主机启用了https过滤，请一定记得为这台机器安装证书。</i></div>
 											<div><i>2&nbsp;&nbsp;在路由器下的设备，不管是电脑，还是移动设备，都可以在浏览器中输入<u><font color='#66FF00'>110.110.110.110</font></u>来下载证书。</i></div>
 											<div><i>3&nbsp;&nbsp;如果想在多台装有koolroxy的路由设备上使用一个证书，请用winscp软件备份/koolshare/koolproxy/data文件夹，并上传到另一台路由。</i></div>
+											<div><i>4&nbsp;&nbsp;访问控制列表内主机，ip地址和mac地址至少一个不能为空！</i></div>
 											</div>
 										<div class="apply_gen">
 											<button id="cmdBtn" class="button_gen" onclick="onSubmitCtrl(this, ' Refresh ')">提交</button>

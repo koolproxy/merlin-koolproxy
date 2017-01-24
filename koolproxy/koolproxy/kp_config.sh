@@ -27,7 +27,7 @@ start_koolproxy(){
 stop_koolproxy(){
 	echo_date 关闭koolproxy主进程...
 	kill -9 `pidof koolproxy` >/dev/null 2>&1
-	#killall koolproxy >/dev/null 2>&1
+	killall koolproxy >/dev/null 2>&1
 }
 
 creat_start_up(){
@@ -223,13 +223,14 @@ lan_acess_control(){
 		for acl in $acl_nu
 		do
 			ipaddr=`dbus get koolproxy_acl_ip_$acl`
+			mac=`dbus get koolproxy_acl_mac_$acl`
 			proxy_name=`dbus get koolproxy_acl_name_$acl`
 			proxy_mode=`dbus get koolproxy_acl_mode_$acl`
 			[ "$proxy_mode" == "0" ] && ports=""
 			[ "$proxy_mode" == "1" ] && ports="80"
 			[ "$proxy_mode" == "2" ] && ports="80,443"
-			echo_date 加载ACL规则：$ipaddr模式为：$(get_mode_name $proxy_mode)
-			iptables -t nat -A KOOLPROXY $(factor $ipaddr "-s") -p tcp $(get_jump_mode $proxy_mode) $(get_action_chain $proxy_mode)
+			echo_date 加载ACL规则：$ipaddr【$mac】模式为：$(get_mode_name $proxy_mode)
+			iptables -t nat -A KOOLPROXY $(factor $ipaddr "-s") $(factor $mac "-m mac --mac-source") -p tcp $(get_jump_mode $proxy_mode) $(get_action_chain $proxy_mode)
 		done
 		echo_date 加载ACL规则：其余主机模式为：$(get_mode_name $koolproxy_acl_default_mode)
 		

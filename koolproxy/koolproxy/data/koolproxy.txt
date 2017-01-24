@@ -1,5 +1,5 @@
-!x  -----update[rules]:  2017-1-23 12:04 --- by <houzi> <today2004>
-!x  -----update[video]:  2017-1-23 12:04 --- by <houzi> <today2004>
+!x  -----update[rules]:  2017-1-24 21:10 --- by <houzi> <today2004>
+!x  -----update[video]:  2017-1-24 15:43 --- by <houzi> <today2004>
 !x  -----base: adblock <koolproxy dedicated>
 !x  -----thanks: xwhyc CJX yiclear adsafe
 !x  -------------------------------------- white rules ---------------------------------------------
@@ -9,7 +9,10 @@
 @@|http://$domain=taobao.com|taobao.org|alipay.com|suning.com|51buy.com|ct10000.com|etao.com|hitao.com|paipai.com|189.cn
 @@|http://$domain=banggo.com|pili.com.tw|yunhou.com|voicecloud.cn|xunfei.cn
 @@||a.v.duowan.com/crossdomain.xml$domain=v.huya.com,third-party
+@@||10jqka.com.cn
+@@||126.net/images/blank.gif
 @@||http://i-play.mobile.youku.com^
+@@|http://t3gd.mail.126.com/upxmail/upload?^
 @@||adash.m.taobao.com/rest
 @@||game.qq.com^
 @@||v.17173.com/advideo/*.mp4
@@ -3044,7 +3047,6 @@
 |http://images.sohu.com/ytv/*.swf
 |http://mfiles.sohu.com/tv/csad/
 |http://newflv.sohu.ccgslb.net/113/*&prod=rtb
-|http://p.aty.sohu.com/p?cat=
 ||adnet.sohu.com
 ||images.sohu.com/ytv/*.jpg|$image
 ||tv.sohu.com/interaction/get/getListByVid.do
@@ -3066,6 +3068,25 @@
 ||cnbeta.com/assets/images/*_670_90.
 ||dytt8.net/js2/
 ||fastapi.net$domain=~ku6.com
+||right.com.cn/forum/static/image/common/logo.gif
+||right.com.cn/logo/*.gif
+||112.126.66.58^*?mid=
+||126.com/get.do?*=themeHandler.
+||126.net/caipiao/js2/index/homePop.js
+||126.net/house/chengdu/flash/*+
+||126.net/house/hangzhou/ad/
+||126.net/house/hrb/flash/*X
+||126.net/house/hrb/js/
+||126.net/house/sjz/*96070
+||126.net/house/sjz/flash/
+||126.net/house/sjz/xt/
+||file.ws.126.net/house/*/js/tc_
+||file.ws.126.net/house/jn/*.swf
+||file.ws.126.net/house/nj/*.swf
+||imgout.ph.126.net^*/355-310.jpg
+||imgout.ph.126.net^*/700x80.jpg
+||imgout.ph.126.net^*/950-90.jpg
+||stat.ws.126.net^
 !x  -------------------------------------- replace rules ---------------------------------------------
 ||firefox.news.cn$s@height="305" frameborder="0"@height="200" frameborder="0"@
 ||firefox.163.com$s@height="305" frameborder="0"@height="200" frameborder="0"@
@@ -3879,12 +3900,11 @@
 |https://www.googletagservices.com^$third-party
 |https://ad.doubleclick.net^$~object-subrequest,third-party
 |https://*.doubleclick.net^$third-party,domain=3news.co.nz|92q.com|abc-7.com|addictinggames.com|allbusiness.com|bizjournals.com|bloomberg.com|bnn.ca|boom92houston.com|boom945.com|boomphilly.com|break.com|cbc.ca|cbs19.tv|cbs3springfield.com|cbslocal.com|complex.com|dailymail.co.uk|darkhorizons.com|doubleviking.com|euronews.com|extratv.com|fandango.com|fox19.com|fox5vegas.com|gorillanation.com|hawaiinewsnow.com|hellobeautiful.com|hiphopnc.com|hot1041stl.com|hothiphopdetroit.com|hotspotatl.com|hulu.com|imdb.com|indiatimes.com|indyhiphop.com|ipowerrichmond.com|joblo.com|kcra.com|kctv5.com|ketv.com|koat.com|koco.com|kolotv.com|kpho.com|kptv.com|ksat.com|ksbw.com|ksfy.com|ksl.com|kypost.com|kysdc.com|live5news.com|livestation.com|livestream.com|metro.us|metronews.ca|miamiherald.com|my9nj.com|myboom1029.com|mycolumbuspower.com|nbcrightnow.com|neatorama.com|necn.com|neopets.com|news.com.au|news4jax.com|newsone.com|nintendoeverything.com|oldschoolcincy.com|pagesuite-professional.co.uk|pandora.com|play.it|player.theplatform.com|radio.com|radionowindy.com|rottentomatoes.com|sbsun.com|shacknews.com|sk-gaming.com|ted.com|thebeatdfw.com|theboxhouston.com|theglobeandmail.com|timesnow.tv|tv2.no|twitch.tv|ustream.tv|wapt.com|washingtonpost.com|wate.com|wbaltv.com|wcvb.com|wdrb.com|wdsu.com|wflx.com|wfmz.com|wfsb.com|wgal.com|whdh.com|wired.com|wisn.com|wiznation.com|wlky.com|wlns.com|wlwt.com|wmur.com|wnem.com|wowt.com|wral.com|wsj.com|wsmv.com|wsvn.com|wtae.com|wthr.com|wxii12.com|wyff4.com|yahoo.com|youtube-nocookie.com|youtube.com|zhiphopcleveland.com
-|https://*/pagead/lvz^
-|https://*.baidu.com^*/c.gif?
-|https://*.baidu.com^*/w.gif?
-|https://www.baidu.com/his?wd=&from=pc_web
-|https://*.bdstatic.com^*/plugins/every_cookie_
-
+!|https://*/pagead/lvz^
+!|https://*.baidu.com^*/c.gif?
+!|https://*.baidu.com^*/w.gif?
+!|https://www.baidu.com/his?wd=&from=pc_web
+!|https://*.bdstatic.com^*/plugins/every_cookie_
 !x  -------------------------------------- https rules ------------------------------------------
 !x  -------------------------------------- html rules ---------------------------------------------
 cnbeta.com###job_box
@@ -4131,4 +4151,91 @@ sina.com.cn##.mod-01
 sina.com.cn###SI_EDU_AD
 ku6.com##div[id^="hzp1"],div.bottom-ad,div#hzi03,[class^="gg-img"],.top-aku6,.gg-bottom,[id^="goodplayMain"],[id^="FTAPI_container_"]
 m.ku6.com##div#tcly
+360kan.com,360kan.letv.com###erweima
+360kan.com,letv.com###logo_activity
+61.hz.letv.com,61.iqiyi.com,v.61.com###J_videoBox > .view
+cloud.letv.com##div#ad_show_box
+le.com###a_body_11628
+le.com###a_title_11628
+le.com##.ad_layer
+le.com##.lay_body[style^="width:490px;height:320px;"]
+le.com##.lay_body[style^="width:980px;height:100px;"]
+le.com##.lay_body[style^="width:980px;height:90px;"]
+le.com##.lay_title[style^="width:490px;height:60px;"]
+le.com##.recommend-part-right
+le.com,letv.com##.Ad
+le.com,letv.com##.adv_img
+le.com,letv.com##.Banner
+le.com,letv.com##.broadcast-adv
+le.com,letv.com##.H-tg
+letv.com###egg
+letv.com###j-adr-playBT
+letv.com###JS_banner01
+letv.com###JS_banner02
+letv.com##.ad_pop
+letv.com##.ad_pop_small
+letv.com##.dl_mobile
+letv.com##.fl_app_bot_wrap
+letv.com##.fl_app_wrap
+letv.com##.newyear_red_bot_wrap
+letv.com##.newyear_red_wrap
+letv.com##.vip_popBox
+letv.com##a[href*=".vip.com"]
+letv.com##div.H-tg,div#egg.egg,div#j-adr-playBT,div[id^="JS_AD_M_P_Banner"],div[id^="a_column_banner_0"],div[id^="JS_H_ad_"].Banner,div.column.Ad,div.pai_bar[data-itemhldr="a"],div[name="words_psmall"],.banner_ad,div.ad_layer
+m.letv.com###j-bottomBanner
+sports.le.com###JS_TL_ad_1 > A > IMG
+qiushibaike.com##.shopwindow
+qiushibaike.com##.yld-ad
+muchong.com###bbsmain > div[style="padding:10px 0;"] > table
+muchong.com###mask
+muchong.com###pid1 > div > a[class]
+muchong.com##.a_subject[href^="creditshow."]
+muchong.com##.header_table + .hr_10 + .wrapper + .wrapper:nth-child(12) > .forum_Post_index
+muchong.com##.viewad
+muchong.com##.xmc_Logo + .xmc_fr
+muchong.com##.xmc_green + a[href^="creditshow."]
+muchong.com##a[href^="adlog."] > img[height="90"]
+muchong.com##a[href^="adlog.php?adid="]
+muchong.com##a[href^="alog.php?id="]
+muchong.com##a[href="http://www.zhuanyejun.com/"]
+muchong.com##div[id^="paper"]
+muchong.com##div[style="padding:15px 0;border:1px solid #648EB2;width:760px;text-align:center;"]
+muchong.com##div[style="padding:8px 10px;font-size:14px; background: #fff; border: 1px solid #648EB2;"] > table > tbody > tr > td:first-child
+muchong.com##p[onclick="view_ok();"]
+muchong.com##td[style="padding-right:15px;border-right:1px solid gray;"] + td[style="padding-left:15px;"]
+muchong.com##td[style="padding:10px;font-size:14px;"] > div > [style="color:green;"]:first-child
+muchong.com##td[style="padding:10px;font-size:14px;"] > div > a[href^="creditshow.php?action=view&logid="]
+muchong.com##td[style="padding:5px 10px;"] + td + td[style="padding-left:10px;"]:last-child
+muchong.com##DIV.bg:nth-child(4) > DIV.wrapper:nth-child(12) > TABLE:first-child > TBODY > TR > TD:first-child > A > IMG
+mydrivers.com##DIV.baidu_box:nth-child(6)
+mydrivers.com###code_lb
+mydrivers.com##.baidu_box
+mydrivers.com##.shidian + div[style="width:1100px;margin:0 auto;padding:0px;"]
+mydrivers.com##table[width="1000"][height="90"]
+mydrivers.com##[width="998"]
+forum.anywlan.com##.bscekvofc_o.wp
+forum.anywlan.com##.a_pt
+forum.anywlan.com###aswift_0
+right.com.cn##a[href^="https://treebear.tmall.com"]
+right.com.cn##.a_mu
+https://www.douyu.com##.chat-top-ad
+https://www.douyu.com##.no-login
+https://www.douyu.com##.official
+https://www.douyu.com##.promotion
+https://www.douyu.com##.room-ad-bottom
+https://www.douyu.com##.room-ad-top
+https://www.douyu.com##.room-ad-video-down
+https://www.douyu.com,www.douyutv.com,wasu.cn###sign_p_1
+https://www.douyu.com,www.douyutv.com,wasu.cn##.giftbox
+https://www.douyu.com,www.douyutv.com,wasu.cn##.promotion.other
+https://www.douyu.com,www.douyutv.com,wasu.cn##.row.row-3
+https://www.douyu.com,www.douyutv.com,wasu.cn##.row-4.theatre
+https://www.douyu.com,www.douyutv.com,wasu.cn##.vcode9-sign
+https://www.douyu.com,www.douyutv.com,wasu.cn##div[id^="sign_p_"]
+126.com##.gWel-promt.En0
+mail.126.com,mail.163.com##div[id$="_AdDiv"]
+mail.126.com,mail.163.com##div[id$="_BannerDiv"]
+mail.126.com,mail.163.com##div[id$="_dvBlockInfo"]
+mail.126.com,mail.163.com##div[id$="_FooterDiv"]
+mail.126.com###_mail_component_174_174 > DIV:last-child > A:last-child > IMG
 !x  -------------------------------------- html rules ---------------------------------------------

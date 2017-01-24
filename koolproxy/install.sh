@@ -51,7 +51,7 @@ cp -f /tmp/koolproxy/uninstall.sh /koolshare/scripts/uninstall_koolproxy.sh
 cd /
 
 chmod 755 /koolshare/bin/koolproxy
-chmod 755 /koolshare/koolproxy/koolproxy.sh
+chmod 755 /koolshare/koolproxy/*
 chmod 755 /koolshare/koolproxy/data/*
 chmod 755 /koolshare/scripts/*
 
@@ -64,6 +64,6 @@ rm -rf /tmp/koolproxy* >/dev/null 2>&1
 dbus set koolproxy_rule_info=`cat /koolshare/koolproxy/data/version | awk 'NR==2{print}'`
 dbus set koolproxy_video_info=`cat /koolshare/koolproxy/data/version | awk 'NR==4{print}'`
 dbus set softcenter_module_koolproxy_install=1
-dbus set softcenter_module_koolproxy_version=3.1.0
-dbus set koolproxy_version=3.1.0
+dbus set softcenter_module_koolproxy_version=3.2.1
+dbus set koolproxy_version=3.2.1
 
