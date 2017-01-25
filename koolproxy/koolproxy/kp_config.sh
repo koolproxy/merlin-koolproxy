@@ -10,13 +10,11 @@ start_koolproxy(){
 	rules_date_local=`cat /koolshare/koolproxy/data/version|awk 'NR==2{print}'`
 	rules_nu_local=`grep -v "!x" /koolshare/koolproxy/data/koolproxy.txt | wc -l`
 	video_date_local=`cat /koolshare/koolproxy/data/version|awk 'NR==4{print}'`
-	host_nu=`cat /koolshare/koolproxy/data/kp_adblock.conf | wc -l`
 	echo_date 加载静态规则日期：$rules_date_local
 	echo_date 加载静态规则条数：$rules_nu_local
 	dbus set koolproxy_rule_info="更新日期：$rules_date_local / $rules_nu_local条"
 	echo_date 加载视频规则日期：$video_date_local
 	dbus set koolproxy_video_info="更新日期：$video_date_local"
-	dbus set koolproxy_adblock_nu=$host_nu
 
 	echo_date 开启koolproxy主进程！
 	cd /koolshare/koolproxy
@@ -33,25 +31,21 @@ stop_koolproxy(){
 creat_start_up(){
 	echo_date 加入开机自动启动...
 	rm -rf /koolshare/init.d/S93koolproxy.sh
-	ln -sf /koolshare/koolproxy/koolproxy.sh /koolshare/init.d/S93koolproxy.sh
+	ln -sf /koolshare/scripts/koolproxy_config.sh /koolshare/init.d/S93koolproxy.sh
+}
+
+del_start_up(){
+	rm -rf /koolshare/init.d/S93koolproxy.sh
 }
 
 write_nat_start(){
 	echo_date 添加nat-start触发事件...
-	dbus set __event__onnatstart_koolproxy="/koolshare/koolproxy/koolproxy.sh"
+	dbus set __event__onnatstart_koolproxy="/koolshare/koolproxy/kp_config.sh"
 }
 
 remove_nat_start(){
 	echo_date 删除nat-start触发...
 	dbus remove __event__onnatstart_koolproxy
-}
-
-load_adblock_plus(){
-	rm -rf /jffs/configs/dnsmasq.d/kp_adblock.conf
-	if [ "$koolproxy_adblock" == "on" ];then
-		ln -sf /koolshare/koolproxy/data/kp_adblock.conf /jffs/configs/dnsmasq.d/kp_adblock.conf
-		dnsmasq_restart=1
-	fi
 }
 
 add_ipset_conf(){
@@ -64,14 +58,14 @@ add_ipset_conf(){
 }
 
 remove_ipset_conf(){
-	if [ -L /jffs/configs/dnsmasq.d/koolproxy_ipset.conf ];then
+	if [ -L "/jffs/configs/dnsmasq.d/koolproxy_ipset.conf" ];then
 		echo_date 移除黑名单软连接...
 		rm -rf /jffs/configs/dnsmasq.d/koolproxy_ipset.conf
 	fi
 }
 
 restart_dnsmasq(){
-	if [ $dnsmasq_restart -eq 1 ];then
+	if [ "$dnsmasq_restart" == "1" ];then
 		echo_date 重启dnsmasq进程...
 		service restart_dnsmasq > /dev/null 2>&1
 	fi
@@ -125,7 +119,7 @@ write_reboot_job(){
 remove_reboot_job(){
 	jobexist=`cru l|grep koolproxy_reboot`
 	# kill crontab job
-	if [ ! -z "$jobexist" ];then
+	if [ -n "$jobexist" ];then
 		echo_date 关闭插件定时重启...
 		sed -i '/koolproxy_reboot/d' /var/spool/cron/crontabs/* >/dev/null 2>&1
 	fi
@@ -312,7 +306,7 @@ case $ACTION in
 start)
 	detect_cert
 	start_koolproxy
-	add_ipset_conf && load_adblock_plus && restart_dnsmasq
+	add_ipset_conf && restart_dnsmasq
 	load_module
 	creat_ipset
 	add_white_black_ip
@@ -328,13 +322,13 @@ restart)
 	remove_ss_event
 	remove_reboot_job
 	remove_ipset_conf
-	remove_nat_start && rm -rf /jffs/configs/dnsmasq.d/kp_adblock.conf
+	remove_nat_start
 	flush_nat
 	stop_koolproxy
 	kill_cron_job
 	detect_cert
 	start_koolproxy
-	add_ipset_conf && load_adblock_plus && restart_dnsmasq
+	add_ipset_conf && restart_dnsmasq
 	load_module
 	creat_ipset
 	add_white_black_ip
@@ -350,12 +344,12 @@ restart)
 stop)
 	remove_ss_event
 	remove_reboot_job
-	remove_ipset_conf && rm -rf /jffs/configs/dnsmasq.d/kp_adblock.conf && restart_dnsmasq
+	remove_ipset_conf && restart_dnsmasq
 	remove_nat_start
 	flush_nat
 	stop_koolproxy
 	kill_cron_job
-	rm -rf /koolshare/init.d/S93koolproxy.sh
+	del_start_up
 	;;
 *)
 	flush_nat

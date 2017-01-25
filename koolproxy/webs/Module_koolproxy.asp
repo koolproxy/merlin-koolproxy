@@ -174,7 +174,6 @@ function buildswitch(){
 		if(document.getElementById('switch').checked){
 			document.form.koolproxy_enable.value = 1;
 			document.getElementById("policy_tr").style.display = "";
-			document.getElementById("host_tr").style.display = "";
 			document.getElementById("kp_status").style.display = "";
 			document.getElementById("rule_update_switch").style.display = "";
 			document.getElementById("auto_reboot_switch").style.display = "";
@@ -186,7 +185,6 @@ function buildswitch(){
 		}else{
 			document.form.koolproxy_enable.value = 0;
 			document.getElementById("policy_tr").style.display = "none";
-			document.getElementById("host_tr").style.display = "none";
 			document.getElementById("kp_status").style.display = "none";
 			document.getElementById("rule_update_switch").style.display = "none";
 			document.getElementById("auto_reboot_switch").style.display = "none";
@@ -213,11 +211,6 @@ function conf2obj(){
     for (var field in db_koolproxy) {
         $j('#'+field).val(db_koolproxy[field]);
     }
-    if (db_koolproxy["koolproxy_adblock"] == "1"){
-	    $G("koolproxy_adblock_chk").checked = true;
-    }else{
-	    $G("koolproxy_adblock_chk").checked = false;
-    }
 }
 
 function reload_Soft_Center(){
@@ -237,7 +230,6 @@ function update_visibility1(){
 function update_visibility(){
 	if(db_koolproxy["koolproxy_enable"] == "1"){
 		document.getElementById("policy_tr").style.display = "";
-		document.getElementById("host_tr").style.display = "";
 		document.getElementById("rule_update_switch").style.display = "";
 		document.getElementById("kp_status").style.display = "";
 		document.getElementById("auto_reboot_switch").style.display = "";
@@ -248,7 +240,6 @@ function update_visibility(){
 		document.getElementById("ACL_note").style.display = "";
 	}else{
 		document.getElementById("policy_tr").style.display = "none";
-		document.getElementById("host_tr").style.display = "none";
 		document.getElementById("rule_update_switch").style.display = "none";
 		document.getElementById("kp_status").style.display = "none";
 		document.getElementById("auto_reboot_switch").style.display = "none";
@@ -754,14 +745,6 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 		document.getElementById(_pullArrowID).style.display = "";
 }
 
-function oncheckclick(obj) {
-	if (obj.checked) {
-		document.form.koolproxy_adblock.value="1";
-	} else {
-		document.form.koolproxy_adblock.value="0";
-	}
-}
-
 /*
 function upload_cert() {
 	if ($G('ss_file').value == "") return false;
@@ -831,7 +814,6 @@ function restore_crt() {
 	<input type="hidden" name="action_script" value=""/>
 	<input type="hidden" name="action_wait" value=""/>
 	<input type="hidden" name="first_time" value=""/>
-	<input type="hidden" id="koolproxy_adblock" name="koolproxy_adblock" value="" />
 	<input type="hidden" id="koolproxy_basic_action" name="koolproxy_basic_action" value="1" />
 	<input type="hidden" name="preferred_lang" id="preferred_lang" value="<% nvram_get("preferred_lang"); %>"/>
 	<input type="hidden" name="SystemCmd" onkeydown="onSubmitCtrl(this, ' Refresh ')" value="koolproxy_config.sh"/>
@@ -867,7 +849,7 @@ function restore_crt() {
                                                                             <div style="float:auto; width:15px; height:25px;margin-top:-40px;margin-left:680px"><img id="return_btn" onclick="reload_Soft_Center();" align="right" style="cursor:pointer;position:absolute;margin-left:-30px;margin-top:-25px;" title="返回软件中心" src="/images/backprev.png" onMouseOver="this.src='/images/backprevclick.png'" onMouseOut="this.src='/images/backprev.png'"></img></div>
                                                                         </li>
                                                                         <li style="margin-top:-5px;">
-                                                                            <h3 id="push_content1" >koolproxy是能识别adblock规则的代理软件，可以用于去除网页静广告和视频广告，并且支持https！
+                                                                            <h3 id="push_content1" >koolproxy是能识别正则的代理软件，可以用于去除网页静广告和视频广告，并且支持https！
                                                                             </h3>
                                                                         </li>
                                                                         <li  style="margin-top:-5px;">
@@ -941,13 +923,6 @@ function restore_crt() {
 														<span id="koolproxy_policy_read1" style="display: none;">全局模式所有80/443端口的流量都会走koolproxy过，过滤效果最好。</span>
 														<span id="koolproxy_policy_read2" style="display: none;">只有黑名单内的域名走koolproxy(基于ipset)，效果不及全局模式。</span>
 														<span id="koolproxy_policy_read3" style="display: none;">视频模式和全局过滤类似，但是只加载视频规则，不加载静态规则。</span>
-												</td>
-											</tr>
-											<tr id="host_tr">
-												<th>开启Adblock Plus Host</th>
-												<td>
-													<input id="koolproxy_adblock_chk" onclick="oncheckclick(this);" type="checkbox">
-													<i>规则数量：<% dbus_get_def("koolproxy_adblock_nu", ""); %>条</i>
 												</td>
 											</tr>
 											<tr id="rule_update_switch">
