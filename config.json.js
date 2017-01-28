@@ -1,9 +1,9 @@
 {
     "build_date": "2016-12-27_09:15:58", 
-    "description": "koolproxy, your right choice!", 
+    "description": "祝大家春节快乐！", 
     "home_url": "Module_koolproxy.asp", 
-    "md5": "6dbaed288bf3706290aa1fda0dd3d15f", 
+    "md5": "3da46cddde4484c907b2b555d357b8f9", 
     "module": "koolproxy", 
     "title": "koolproxy", 
-    "version": "3.2.2.1"
+    "version": "3.2.3"
 }

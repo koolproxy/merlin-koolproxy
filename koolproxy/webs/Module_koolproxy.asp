@@ -12,7 +12,6 @@
 <link rel="stylesheet" type="text/css" href="form_style.css"/>
 <link rel="stylesheet" type="text/css" href="usp_style.css"/>
 <link rel="stylesheet" type="text/css" href="css/element.css">
-<link rel="stylesheet" type="text/css" href="/res/shadowsocks.css">
 <link rel="stylesheet" type="text/css" href="/device-map/device-map.css">
 <script type="text/javascript" src="/state.js"></script>
 <script type="text/javascript" src="/popup.js"></script>
@@ -46,6 +45,40 @@
 	border-radius: 5px 5px 5px 5px;
 	width:14%;
 }
+.input_option_2{
+
+	height:25px;
+
+	background-color:#475a5f;
+
+	border: 0px solid #222;
+
+	color:#FFFFFF;
+
+	font-family:'Courier New', Courier, mono;
+
+	font-size:13px;
+
+}
+#log_content3, #loading_block2, #log_content1 {line-height:1.5}
+#log_content3, #log_content1 { -ms-overflow-style: none; overflow: auto; } /* for IE hide scrollbar on ss node ta */
+
+#log_content3::-webkit-scrollbar, #log_content1::-webkit-scrollbar {
+
+    width: 0px;  /* remove scrollbar space */
+
+    background: transparent;  /* optional: just make scrollbar invisible */
+
+}
+
+#log_content3:focus, #log_content1:focus {
+
+	outline: none;
+
+}
+
+#log_content3, #log_content1 {overflow: -moz-scrollbars-none;}
+
 </style>
 
 <script>
@@ -845,7 +878,7 @@ function restore_crt() {
                                                                 <td>
                                                                     <ul style="margin-top:-70px;padding-left:15px;" >
                                                                         <li style="margin-top:-5px;">
-                                                                            <h2 id="push_titile"><em>koolproxy <% dbus_get_def("koolproxy_version", "3.2.1"); %></em></h2>
+                                                                            <h2 id="push_titile"><em>koolproxy <% dbus_get_def("koolproxy_version", "3.2.3"); %></em></h2>
                                                                             <div style="float:auto; width:15px; height:25px;margin-top:-40px;margin-left:680px"><img id="return_btn" onclick="reload_Soft_Center();" align="right" style="cursor:pointer;position:absolute;margin-left:-30px;margin-top:-25px;" title="返回软件中心" src="/images/backprev.png" onMouseOver="this.src='/images/backprevclick.png'" onMouseOut="this.src='/images/backprev.png'"></img></div>
                                                                         </li>
                                                                         <li style="margin-top:-5px;">
