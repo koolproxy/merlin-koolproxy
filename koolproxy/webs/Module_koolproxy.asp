@@ -78,7 +78,28 @@
 }
 
 #log_content3, #log_content1 {overflow: -moz-scrollbars-none;}
-
+.contentM_qis {
+	position: absolute;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius:10px;
+	z-index: 10;
+	background-color:#2B373B;
+	margin-left: -215px;
+	top: 240px;
+	width:980px;
+	return height:auto;
+	box-shadow: 3px 3px 10px #000;
+	background: rgba(0,0,0,0.85);
+	display:none;
+}
+.user_title{
+	text-align:center;
+	font-size:18px;
+	color:#99FF00;
+	padding:10px;
+	font-weight:bold;
+}
 </style>
 
 <script>
@@ -86,7 +107,12 @@ var $j = jQuery.noConflict();
 var $G = function(id){return document.getElementById(id);};
 var _responseLen;
 var noChange = 0;
-
+var Base64;
+if(typeof btoa == "Function") {
+   Base64 = {encode:function(e){ return btoa(e); }, decode:function(e){ return atob(e);}};
+} else {
+   Base64 ={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9\+\/\=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/\r\n/g,"\n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}
+}
 function init(menu_hook) {
 	show_menu();
 	get_status();
@@ -112,6 +138,11 @@ function init(menu_hook) {
 	function() {
 		location.href = "http://110.110.110.110";
 	});
+	$j("#koolproxy_github").click(
+		function() {
+		window.open("https://github.com/koolproxy/koolproxy_rules");
+		});
+	get_user_rule();
 }
 
 function generate_options(){
@@ -148,7 +179,7 @@ function get_status() {
 	        },
         success: function(response) {
     		check_KP_status();
-        	}
+        }
     });
 }
 var noChange_status=0;
@@ -189,6 +220,55 @@ function done_validating(action) {
 	return true;
 }
 
+function get_user_rule(){
+	$j.ajax({
+		url: '/res/koolproxy_user.htm',
+		dataType: 'html',
+		
+		error: function(xhr){
+			setTimeout("check_KP_user();", 1000);
+		},
+		success: function(response){
+			kp_user = response.replace("XU6J03M6", " ");
+			document.getElementById("usertxt").value = response;
+			return true;
+		}
+	});
+}
+
+
+function save_user_txt() {
+	var rules = {};
+	var p = "koolproxy_acl";
+	rules["koolproxy_user_rule"] = Base64.encode($j('#usertxt').val());
+	$j.ajax({
+		url: '/applydb.cgi?p=koolproxy',
+		contentType: "application/x-www-form-urlencoded",
+		dataType: 'text',
+		data: $j.param(rules),
+		error: function(xhr) {
+			console.log("error in posting config of table");
+		},
+		success: function(response) {
+			document.form.koolproxy_basic_action.value = 4;
+			write_file();
+			showKPLoadingBar();
+    		noChange = 0;
+    		setTimeout("checkCmdRet();", 500);
+		}
+	});
+}
+
+function write_file() {
+    $j.ajax({
+        url: 'apply.cgi?current_page=Module_koolproxy.asp&next_page=Module_koolproxy.asp&group_id=&modified=0&action_mode=+Refresh+&action_script=&action_wait=&first_time=&preferred_lang=CN&SystemCmd=koolproxy_write_usertxt.sh&firmver=3.0.0.4',
+        dataType: 'html',
+        error: function(xhr) {
+	        alert("error");
+	    },
+    });
+}
+
 var enable_ss = "<% nvram_get("enable_ss"); %>";
 var enable_soft = "<% nvram_get("enable_soft"); %>";
 function menu_hook(title, tab) {
@@ -212,7 +292,7 @@ function buildswitch(){
 			document.getElementById("auto_reboot_switch").style.display = "";
 			document.getElementById("cert_download_tr").style.display = "";
 			document.getElementById("klloproxy_com").style.display = "";
-			//document.getElementById("cert_uplpad_tr").style.display = "";
+			document.getElementById("acl_method_tr").style.display = "";
 			document.getElementById("ACL_table").style.display = "";
 			document.getElementById("ACL_note").style.display = "";
 		}else{
@@ -223,7 +303,7 @@ function buildswitch(){
 			document.getElementById("auto_reboot_switch").style.display = "none";
 			document.getElementById("cert_download_tr").style.display = "none";
 			document.getElementById("klloproxy_com").style.display = "none";
-			//document.getElementById("cert_uplpad_tr").style.display = "none";
+			document.getElementById("acl_method_tr").style.display = "none";
 			document.getElementById("ACL_table").style.display = "none";
 			document.getElementById("ACL_note").style.display = "none";
 		}
@@ -268,7 +348,7 @@ function update_visibility(){
 		document.getElementById("auto_reboot_switch").style.display = "";
 		document.getElementById("cert_download_tr").style.display = "";
 		document.getElementById("klloproxy_com").style.display = "";
-		//document.getElementById("cert_uplpad_tr").style.display = "";
+		document.getElementById("acl_method_tr").style.display = "";
 		document.getElementById("ACL_table").style.display = "";
 		document.getElementById("ACL_note").style.display = "";
 	}else{
@@ -278,7 +358,7 @@ function update_visibility(){
 		document.getElementById("auto_reboot_switch").style.display = "none";
 		document.getElementById("cert_download_tr").style.display = "none";
 		document.getElementById("klloproxy_com").style.display = "none";
-		//document.getElementById("cert_uplpad_tr").style.display = "none";
+		document.getElementById("acl_method_tr").style.display = "none";
 		document.getElementById("ACL_table").style.display = "none";
 		document.getElementById("ACL_note").style.display = "none";
 	}
@@ -414,14 +494,15 @@ function LoadingKPProgress(seconds){
 		document.getElementById("loading_block3").innerHTML = "koolproxy关闭中 ..."
 		$j("#loading_block2").html("<li><font color='#ffcc00'><a href='http://www.koolshare.cn' target='_blank'></font>koolproxy工作有问题？请来我们的<font color='#ffcc00'>论坛www.koolshare.cn</font>反应问题...</font></li>");
 	} else {
+			$j("#loading_block2").html("<font color='#ffcc00'>--------------------------------------------------------------------------------------------------------------------------------------");
 		if (document.form.koolproxy_basic_action.value == 1){
 			document.getElementById("loading_block3").innerHTML = "开启koolproxy ..."
-			$j("#loading_block2").html("<font color='#ffcc00'>--------------------------------------------------------------------------------------------------------------------------------------");
 		}else if (document.form.koolproxy_basic_action.value == 2){
 			document.getElementById("loading_block3").innerHTML = "更新koolproxy规则列表 ..."
 		}else if (document.form.koolproxy_basic_action.value == 3){
 			document.getElementById("loading_block3").innerHTML = "上传证书 ..."
-			//$j("#loading_block2").html("<li><font color='#ffcc00'>此期间请勿访问屏蔽网址，以免污染DNS进入缓存</font></li><li><font color='#ffcc00'>无需重启全部服务，DNS即可生效~</font></li>");
+		}else if (document.form.koolproxy_basic_action.value == 4){
+			document.getElementById("loading_block3").innerHTML = "保存user.txt ..."
 		}
 	}
 }
@@ -777,44 +858,12 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 	else
 		document.getElementById(_pullArrowID).style.display = "";
 }
-
-/*
-function upload_cert() {
-	if ($G('ss_file').value == "") return false;
-	global_ss_node_refresh = false;
-	$G('ss_file_info').style.display = "none";
-	$G('loadingicon').style.display = "block";
-	document.form.enctype = "multipart/form-data";
-	document.form.encoding = "multipart/form-data";
-	document.form.action = "/ssupload.cgi?a=/tmp/ca.crt";
-	document.form.submit();
+function open_user_rule(){
+	$j("#vpnc_settings").fadeIn(200);
 }
-
-function upload_ok(isok) {
-	var info = $G('ss_file_info');
-	if (isok == 1) {
-		info.innerHTML = "上传完成";
-		setTimeout("restore_crt();", 1000);
-	} else {
-		info.innerHTML = "上传失败";
-	}
-	info.style.display = "block";
-	$G('loadingicon').style.display = "none";
+function close_user_rule(){
+	$j("#vpnc_settings").fadeOut(200);
 }
-
-function restore_crt() {
-	document.form.action_mode.value = ' Refresh ';
-	document.form.action = "/applydb.cgi?p=koolproxy";
-	document.form.SystemCmd.value = "koolproxy_restore_crt.sh";
-	document.form.enctype = "";
-	document.form.encoding = "";
-	document.form.submit();
-	document.form.koolproxy_basic_action.value = 3;
-	showKPLoadingBar();
-	noChange = 0;
-	setTimeout("checkCmdRet();", 500);
-}
-*/
 
 </script>
 </head>
@@ -915,6 +964,20 @@ function restore_crt() {
                                                 <td colspan="3"></td>
                                             </tr>
                                         </table>
+										<div id="vpnc_settings"  class="contentM_qis" style="box-shadow: 3px 3px 10px #000;margin-top: -65px;">
+											<div class="user_title">koolproxy自定义规则</i></div>
+											<div style="margin-left:15px"><i>1&nbsp;&nbsp;点击【保存文件】按钮，文本框内的内容会保存到/koolshare/koolproxy/data/user.txt。</i></div>
+											<div style="margin-left:15px"><i>2&nbsp;&nbsp;如果你更改了user.txt，你需要重新重启koolproxy插件才，新加入的规则才能生效。</i></div>
+											<div style="margin-left:15px"><i>3&nbsp;&nbsp;虽然koolproxy支持adblock规则，但是我们一点都不建议你直接使用他们的规则内容，因为这极可能导致规则冲突。</i></div>
+											<div id="user_tr" style="margin: 10px 10px 10px 10px;width:98%;text-align:center;">
+												<textarea cols="63" rows="36" wrap="off" id="usertxt" style="width:97%;padding-left:10px;padding-right:10px;border:1px solid #222;font-family:'Courier New', Courier, mono; font-size:11px;background:#475A5F;color:#FFFFFF;outline: none;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+											</div>
+											<div style="margin-top:5px;padding-bottom:10px;width:100%;text-align:center;">
+												<input id="edit_node" class="button_gen" type="button" onclick="save_user_txt();" value="保存文件">	
+												<input id="edit_node" class="button_gen" type="button" onclick="close_user_rule();" value="返回主界面">	
+											</div>	
+										      <!--===================================Ending of vpnc setting Content===========================================-->			
+										</div>
 										<table style="margin:-20px 0px 0px 0px;" width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable" id="routing_table">
 											<thead>
 											<tr>
@@ -940,6 +1003,7 @@ function restore_crt() {
 													<div id="koolproxy_install_show" style="padding-top:5px;margin-left:80px;margin-top:-30px;float: left;"></div>	
 												</td>
 											</tr>
+
 											<tr id="kp_status">
 												<th>koolproxy运行状态</th>
 												<td><span id="status"></span></td>
@@ -989,9 +1053,8 @@ function restore_crt() {
 													</span>
 													
 													<input class="kp_btn" onclick="start_update()" style="cursor:pointer;" type="submit" value="手动更新" />
-													<span>
-														<a class="kp_btn" style="margin-left: 20px;" href="https://github.com/koolproxy/koolproxy_rules" target="_blank">规则反馈</a>
-													</span>
+													<input class="kp_btn" onclick="open_user_rule()" style="cursor:pointer;" type="submit" value="自定规则" />
+													<input class="kp_btn" id="koolproxy_github" onclick="open_rule_github()" style="cursor:pointer;" type="submit" value="规则反馈" />
 												</td>
 											</tr>
 											<tr id="auto_reboot_switch">
@@ -1025,6 +1088,16 @@ function restore_crt() {
 													</span>
 												</td>
 											</tr>
+											<tr id="acl_method_tr">
+												<th>访问控制匹配方法</th>
+												<td>
+													<select name="koolproxy_acl_method" id="koolproxy_acl_method" class="input_option" style="width:127px;margin:0px 0px 0px 2px;" onchange="update_visibility1();">
+														<option value="1" selected>IP + MAC匹配</option>
+														<option value="2">仅IP匹配</option>
+														<option value="3">仅MAC匹配</option>
+													</select>
+												</td>
+											</tr>											
 											<tr id="cert_download_tr">
 												<th width="35%">证书下载（用于https过滤）</th>
 												<td>
@@ -1039,17 +1112,6 @@ function restore_crt() {
 													<a type="button" class="kp_btn" target="_blank" href="https://t.me/joinchat/AAAAAD-tO7GPvfOU131_vg">加入电报群</a>
 												</td>
 											</tr>
-											<!--
-											<tr id="cert_uplpad_tr">
-												<th width="35%">证书上传（用于https过滤）</th>
-												<td>
-													<input type="button" class="kp_btn" onclick="upload_cert();" value="上传证书">
-													<input style="color:#FFCC00;*color:#000;width: 200px;" id="ss_file" type="file" name="file">
-													<img id="loadingicon" style="margin-left:5px;margin-right:5px;display:none;" src="/images/InternetScan.gif">
-													<span id="ss_file_info" style="display:none;">完成</span>
-												</td>
-											</tr>
-											-->
                                     	</table>
 
 										<table id="ACL_table" style="margin:10px 0px 0px 0px;" width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable" >
@@ -1058,36 +1120,36 @@ function restore_crt() {
 												<td colspan="6">访问控制</td>
 											</tr>
 											</thead>
-													<tr>
-														<th style="width:180px;">主机IP地址</th>
-														<th style="width:160px;">mac地址</th>
-														<th style="width:160px;">主机别名</th>
-														<th style="width:160px;">访问控制</th>
-														<th style="width:60px;">添加/删除</th>
-													</tr>
-													<tr>
-														<td>
-															<input type="text" maxlength="15" class="input_15_table" id="koolproxy_acl_ip" name="koolproxy_acl_ip" align="left" onkeypress="return validator.isIPAddr(this, event)" style="float:left;"/ autocomplete="off" onClick="hideClients_Block();" autocorrect="off" autocapitalize="off">
-															<img id="pull_arrow" height="14px;" src="images/arrow-down.gif" align="right" onclick="pullLANIPList(this);" title="<#select_IP#>">
-															<div id="ClientList_Block" class="clientlist_dropdown" style="margin-left:2px;margin-top:25px;"></div>
-														</td>
-														<td>
-															<input type="text" id="koolproxy_acl_mac" name="koolproxy_acl_mac" class="ssconfig input_ss_table" maxlength="50" style="width:140px;" placeholder="" />
-														</td>
-														<td>
-															<input type="text" id="koolproxy_acl_name" name="koolproxy_acl_name" class="ssconfig input_ss_table" maxlength="50" style="width:140px;" placeholder="" />
-														</td>
-														<td>
-															<select id="koolproxy_acl_mode" name="koolproxy_acl_mode" style="width:160px;margin:0px 0px 0px 2px;" class="input_option">
-																<option value="1">http only</option>
-																<option value="2">http + https</option>
-																<option value="0">不过滤</option>
-															</select>
-														</td>
-														<td style="width:66px">
-															<input style="margin-left: 6px;margin: -3px 0px -5px 6px;" type="button" class="add_btn" onclick="addTr()" value="" />
-														</td>
-													</tr>
+											<tr>
+												<th style="width:180px;">主机IP地址</th>
+												<th style="width:160px;">mac地址</th>
+												<th style="width:160px;">主机别名</th>
+												<th style="width:160px;">访问控制</th>
+												<th style="width:60px;">添加/删除</th>
+											</tr>
+											<tr>
+												<td>
+													<input type="text" maxlength="15" class="input_15_table" id="koolproxy_acl_ip" name="koolproxy_acl_ip" align="left" onkeypress="return validator.isIPAddr(this, event)" style="float:left;"/ autocomplete="off" onClick="hideClients_Block();" autocorrect="off" autocapitalize="off">
+													<img id="pull_arrow" height="14px;" src="images/arrow-down.gif" align="right" onclick="pullLANIPList(this);" title="<#select_IP#>">
+													<div id="ClientList_Block" class="clientlist_dropdown" style="margin-left:2px;margin-top:25px;"></div>
+												</td>
+												<td>
+													<input type="text" id="koolproxy_acl_mac" name="koolproxy_acl_mac" class="ssconfig input_ss_table" maxlength="50" style="width:140px;" placeholder="" />
+												</td>
+												<td>
+													<input type="text" id="koolproxy_acl_name" name="koolproxy_acl_name" class="ssconfig input_ss_table" maxlength="50" style="width:140px;" placeholder="" />
+												</td>
+												<td>
+													<select id="koolproxy_acl_mode" name="koolproxy_acl_mode" style="width:160px;margin:0px 0px 0px 2px;" class="input_option">
+														<option value="1">http only</option>
+														<option value="2">http + https</option>
+														<option value="0">不过滤</option>
+													</select>
+												</td>
+												<td style="width:66px">
+													<input style="margin-left: 6px;margin: -3px 0px -5px 6px;" type="button" class="add_btn" onclick="addTr()" value="" />
+												</td>
+											</tr>
 										</table>
 											<div id="ACL_note">
 											<div><i>1&nbsp;&nbsp;如果你为某台主机启用了https过滤，请一定记得为这台机器安装证书。</i></div>
@@ -1095,6 +1157,7 @@ function restore_crt() {
 											<div><i>3&nbsp;&nbsp;如果想在多台装有koolroxy的路由设备上使用一个证书，请用winscp软件备份/koolshare/koolproxy/data文件夹，并上传到另一台路由。</i></div>
 											<div><i>4&nbsp;&nbsp;访问控制列表内主机，ip地址和mac地址至少一个不能为空！</i></div>
 											</div>
+
 										<div class="apply_gen">
 											<button id="cmdBtn" class="button_gen" onclick="onSubmitCtrl(this, ' Refresh ')">提交</button>
 										</div>

@@ -6,6 +6,13 @@ eval `dbus export koolproxy`
 source /koolshare/scripts/base.sh
 alias echo_date='echo $(date +%Y年%m月%d日\ %X):'
 
+write_user_txt(){
+	if [ -n "$koolproxy_user_rule" ];then
+		echo $koolproxy_user_rule | base64_decode > /koolshare/koolproxy/data/user.txt
+		dbus remove koolproxy_user_rule
+	fi
+}
+
 start_koolproxy(){
 	rules_date_local=`cat /koolshare/koolproxy/data/version|awk 'NR==2{print}'`
 	rules_nu_local=`grep -v "!x" /koolshare/koolproxy/data/koolproxy.txt | wc -l`
@@ -20,6 +27,7 @@ start_koolproxy(){
 	cd /koolshare/koolproxy
 	[ $koolproxy_policy -eq 3 ] && ARG_VIDEO="-e" || ARG_VIDEO=""
 	koolproxy -d $ARG_VIDEO
+	
 }
 
 stop_koolproxy(){
@@ -220,10 +228,9 @@ lan_acess_control(){
 			mac=`dbus get koolproxy_acl_mac_$acl`
 			proxy_name=`dbus get koolproxy_acl_name_$acl`
 			proxy_mode=`dbus get koolproxy_acl_mode_$acl`
-			[ "$proxy_mode" == "0" ] && ports=""
-			[ "$proxy_mode" == "1" ] && ports="80"
-			[ "$proxy_mode" == "2" ] && ports="80,443"
-			echo_date 加载ACL规则：$ipaddr【$mac】模式为：$(get_mode_name $proxy_mode)
+			[ "$koolproxy_acl_method" == "1" ] && echo_date 加载ACL规则：【$ipaddr】【$mac】模式为：$(get_mode_name $proxy_mode)
+			[ "$koolproxy_acl_method" == "2" ] && mac="" && echo_date 加载ACL规则：【$ipaddr】模式为：$(get_mode_name $proxy_mode)
+			[ "$koolproxy_acl_method" == "3" ] && ipaddr="" && echo_date 加载ACL规则：【$mac】模式为：$(get_mode_name $proxy_mode)
 			iptables -t nat -A KOOLPROXY $(factor $ipaddr "-s") $(factor $mac "-m mac --mac-source") -p tcp $(get_jump_mode $proxy_mode) $(get_action_chain $proxy_mode)
 		done
 		echo_date 加载ACL规则：其余主机模式为：$(get_mode_name $koolproxy_acl_default_mode)
@@ -248,6 +255,7 @@ load_nat(){
 	    fi
 	    sleep 1
 	done
+	
 	echo_date 加载nat规则！
 	#----------------------BASIC RULES---------------------
 	echo_date 写入iptables规则到nat表中...
@@ -257,9 +265,9 @@ load_nat(){
 	iptables -t nat -A KOOLPROXY -m set --match-set white_kp_list dst -j RETURN
 	#  生成对应CHAIN
 	iptables -t nat -N KOOLPROXY_HTTP
-	iptables -t nat -A KOOLPROXY_HTTP -p tcp --dport 80 -j REDIRECT --to-ports 3000
+	iptables -t nat -A KOOLPROXY_HTTP -p tcp -m multiport --dport 80,8080 -j REDIRECT --to-ports 3000
 	iptables -t nat -N KOOLPROXY_HTTPS
-	iptables -t nat -A KOOLPROXY_HTTPS -p tcp -m multiport --dport 80,443 -j REDIRECT --to-ports 3000
+	iptables -t nat -A KOOLPROXY_HTTPS -p tcp -m multiport --dport 80,443,8080 -j REDIRECT --to-ports 3000
 	# 局域网控制
 	lan_acess_control
 	# 剩余流量转发到缺省规则定义的链中
@@ -317,8 +325,10 @@ start)
 	write_cron_job
 	write_reboot_job
 	add_ss_event
+	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/user.txt /tmp/user.txt
 	;;
 restart)
+	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/user.txt /tmp/user.txt
 	remove_ss_event
 	remove_reboot_job
 	remove_ipset_conf
@@ -342,6 +352,7 @@ restart)
 	echo_date koolproxy启用成功，请等待日志窗口自动关闭，页面会自动刷新...
 	;;
 stop)
+	rm -rf /tmp/user.txt
 	remove_ss_event
 	remove_reboot_job
 	remove_ipset_conf && restart_dnsmasq
