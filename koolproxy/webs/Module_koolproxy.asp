@@ -272,13 +272,8 @@ function write_file() {
 var enable_ss = "<% nvram_get("enable_ss"); %>";
 var enable_soft = "<% nvram_get("enable_soft"); %>";
 function menu_hook(title, tab) {
-	if(enable_ss == "1" && enable_soft == "1"){
-		tabtitle[17] = new Array("", "koolproxy");
-		tablink[17] = new Array("", "Module_koolproxy.asp");
-	}else{
-		tabtitle[16] = new Array("", "koolproxy");
-		tablink[16] = new Array("", "Module_koolproxy.asp");
-	}
+	tabtitle[tabtitle.length -1] = new Array("", "koolproxy");
+	tablink[tablink.length -1] = new Array("", "Module_koolproxy.asp");
 }
 
 function buildswitch(){

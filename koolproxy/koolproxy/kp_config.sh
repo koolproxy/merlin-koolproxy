@@ -149,8 +149,7 @@ creat_ipset(){
 }
 
 add_white_black_ip(){
-	ip1=$(nvram get wan0_ipaddr | cut -d"." -f1,2)
-	ip_lan="0.0.0.0/8 10.0.0.0/8 100.64.0.0/10 127.0.0.0/8 169.254.0.0/16 172.16.0.0/12 192.168.0.0/16 224.0.0.0/4 240.0.0.0/4 $ip1.0.0/16"
+	ip_lan="0.0.0.0/8 10.0.0.0/8 100.64.0.0/10 127.0.0.0/8 169.254.0.0/16 172.16.0.0/12 192.168.0.0/16 224.0.0.0/4 240.0.0.0/4"
 	for ip in $ip_lan
 	do
 		ipset -A white_kp_list $ip >/dev/null 2>&1
@@ -265,9 +264,9 @@ load_nat(){
 	iptables -t nat -A KOOLPROXY -m set --match-set white_kp_list dst -j RETURN
 	#  生成对应CHAIN
 	iptables -t nat -N KOOLPROXY_HTTP
-	iptables -t nat -A KOOLPROXY_HTTP -p tcp -m multiport --dport 80,8080 -j REDIRECT --to-ports 3000
+	iptables -t nat -A KOOLPROXY_HTTP -p tcp -m multiport --dport 80,82,8080 -j REDIRECT --to-ports 3000
 	iptables -t nat -N KOOLPROXY_HTTPS
-	iptables -t nat -A KOOLPROXY_HTTPS -p tcp -m multiport --dport 80,443,8080 -j REDIRECT --to-ports 3000
+	iptables -t nat -A KOOLPROXY_HTTPS -p tcp -m multiport --dport 80,82,443,8080 -j REDIRECT --to-ports 3000
 	# 局域网控制
 	lan_acess_control
 	# 剩余流量转发到缺省规则定义的链中
