@@ -23,6 +23,9 @@ start_koolproxy(){
 	echo_date 加载视频规则日期：$video_date_local
 	dbus set koolproxy_video_info="更新日期：$video_date_local"
 
+	kp_version=`koolproxy -h | head -n1 | awk '{print $6}'`
+	dbus set koolproxy_binary_version="koolprxoy $kp_version "
+
 	echo_date 开启koolproxy主进程！
 	cd /koolshare/koolproxy
 	[ $koolproxy_policy -eq 3 ] && ARG_VIDEO="-e" || ARG_VIDEO=""

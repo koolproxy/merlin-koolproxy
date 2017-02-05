@@ -4,7 +4,7 @@ eval `dbus export koolproxy`
 # stop first
 dbus set koolproxy_enable=0
 [ -f /koolshare/koolproxy/koolproxy.sh ] && sh /koolshare/koolproxy/koolproxy.sh stop
-
+[ -f /koolshare/koolproxy/kp_config.sh ] && sh /koolshare/koolproxy/kp_config.sh stop
 # remove old files
 rm -rf /koolshare/bin/koolproxy >/dev/null 2>&1
 rm -rf /koolshare/koolproxy/koolproxy.sh >/dev/null 2>&1
@@ -64,6 +64,6 @@ rm -rf /tmp/koolproxy* >/dev/null 2>&1
 dbus set koolproxy_rule_info=`cat /koolshare/koolproxy/data/version | awk 'NR==2{print}'`
 dbus set koolproxy_video_info=`cat /koolshare/koolproxy/data/version | awk 'NR==4{print}'`
 dbus set softcenter_module_koolproxy_install=1
-dbus set softcenter_module_koolproxy_version=3.2.1
-dbus set koolproxy_version=3.2.1
+dbus set softcenter_module_koolproxy_version=3.2.5.1
+dbus set koolproxy_version=3.2.5.1
 

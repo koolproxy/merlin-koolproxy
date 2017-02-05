@@ -1,5 +1,5 @@
-!x  -----update[rules]:  2017-02-3 17:33 --- by <houzi> <today2004>
-!x  -----update[video]:  2017-02-3 02:25 --- by <houzi> <today2004>
+!x  -----update[rules]:  2017-02-5 18:44 --- by <houzi> <today2004>
+!x  -----update[video]:  2017-02-5 16:59 --- by <houzi> <today2004>
 !x  -----base: adblock <koolproxy dedicated>
 !x  -----thanks: xwhyc CJX yiclear adsafe
 !x  -------------------------------------- white rules ---------------------------------------------
@@ -9,6 +9,11 @@
 @@|http://$domain=taobao.com|taobao.org|alipay.com|suning.com|51buy.com|ct10000.com|etao.com|hitao.com|paipai.com|189.cn
 @@|http://$domain=banggo.com|pili.com.tw|yunhou.com|voicecloud.cn|xunfei.cn
 @@||a.v.duowan.com/crossdomain.xml$domain=v.huya.com,third-party
+@@||study.163.com
+@@|http://pingfore.qq.com
+@@|http://ossweb-img.qq.com
+!@@|http://tgact.qq.com
+!@@|http://pingtcss.qq.com
 @@|http://d1oxlq5h9kq8q5.cloudfront.net
 @@||10jqka.com.cn
 @@||126.net/images/blank.gif
@@ -3100,6 +3105,12 @@
 |http://js*:8080/$script,third-party
 |http://www.70lm.com:82/xia/dysfz/
 ||iroby.com^
+|http://*.yikexun.cn/$script
+|http://img.aolusb.com/forever/m.js
+|http://www.btbtt.co/jstb.js
+|http://www.btbtt.co/view/image/backimg.jpg
+|http://www.btbtt.la/bt.js
+|http://www.btbtt.la/jstb.js
 !x  -------------------------------------- replace rules ---------------------------------------------
 ||firefox.news.cn$s@height="305" frameborder="0"@height="200" frameborder="0"@
 ||firefox.163.com$s@height="305" frameborder="0"@height="200" frameborder="0"@
@@ -3910,6 +3921,7 @@
 !|https://*.baidu.com^*/w.gif?
 !|https://www.baidu.com/his?wd=&from=pc_web
 !|https://*.bdstatic.com^*/plugins/every_cookie_
+https://www.youtube.com###header
 !x  -------------------------------------- https rules ------------------------------------------
 !x  -------------------------------------- html rules ---------------------------------------------
 cnbeta.com###job_box
@@ -4295,9 +4307,16 @@ g.pconline.com.cn##DIV#pc-aptgA,div[class="m-header-top"],#JucLogin,#pTit-5,DIV.
 pconline.com.cn##.tl-best-a,.app-con,.app-bg,.jcztl,#pc-aptg,.dl-fixed,.juletao,#intelAD,.m-ad-tl,#JpopHuoDong
 bilibili.com##div#b_app_link,div.goto-mobile,[data-id="68"],.live-ad-full,.index-promote,.ad-f,[data-id^="490"],[data-ad-type],.data-id-ad,.ad-e1
 tieba.baidu.com##.game-head-game-info-wrapper.clearfix
+tieba.baidu.com###pb_adbanner
 dytt.net###_hy_img_text_
 dytt.net###_hy_img_
 dytt.net###_hy_666_
 pcpop.com##body > div.bg2017 > div > div:nth-child(6),body > div.bg2017 > div > div:nth-child(10),body > div.bg2017 > div > div:nth-child(11),.r1,#ad_960_22,#ad_760_21,#ad_760_22,#ad_760_31,#ad_760_32,#ad_760_41,#ad_760_33
 v.17173.com###corner_left
+btbbt.cc,btbtt.co,btbtt.la##.guanggao,div[style="width: 250px; height: 250px; float: right"],.out,[id^="ggDiv"],.wrapper_bg_c
+qq.com##body > div:nth-child(12)
+qq.com##body > div:nth-child(27)
+qq.com###contentLayout > div:nth-child(8)
+qq.com##body > div:nth-child(31)
+qq.com###contentLayout > div:nth-child(5)
 !x  -------------------------------------- html rules ---------------------------------------------

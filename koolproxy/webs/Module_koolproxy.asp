@@ -100,6 +100,33 @@
 	padding:10px;
 	font-weight:bold;
 }
+.FormTitle_chrome56 i {
+    color: #FC0;
+    font-style: normal;
+}
+.FormTitle_chrome56 em {
+    color: #00ffe4;
+    font-style: normal;
+}
+.FormTitle_chrome56 b {
+    color: #1cfe16;
+    font-style: normal;
+	font-weight:normal;
+}
+
+.FormTitle_firefox i {
+    color: #FC0;
+    font-style: normal;
+}
+.FormTitle_firefox em {
+    color: #00ffe4;
+    font-style: normal;
+}
+.FormTitle_firefox b {
+    color: #1cfe16;
+    font-style: normal;
+	font-weight:normal;
+}
 </style>
 
 <script>
@@ -1001,7 +1028,7 @@ function close_user_rule(){
 
 											<tr id="kp_status">
 												<th>koolproxy运行状态</th>
-												<td><span id="status"></span></td>
+												<td><span title="如果发现程序主版本号和插件不一致的，请重装插件！例如插件版本3.2.5.1和程序版本v3.2.5，则为一致"><% dbus_get_def("koolproxy_binary_version", ""); %></span><span id="status"></span></td>
 											</tr>
 		
 											<tr id="policy_tr">
