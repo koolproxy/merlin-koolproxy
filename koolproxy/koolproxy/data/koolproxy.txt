@@ -1,4 +1,4 @@
-!x  -----update[rules]:  2017-02-09 22:00 --- by <houzi> <today2004> <sadog>
+!x  -----update[rules]:  2017-02-09 23:25 --- by <houzi> <today2004> <sadog>
 !x  -----update[video]:  2017-02-07 22:15 --- by <houzi> <today2004>
 !x  -----base: adblock <koolproxy dedicated>
 !x  -----thanks: xwhyc CJX yiclear adsafe
@@ -22,6 +22,7 @@
 @@||adash.m.taobao.com/rest
 @@||game.qq.com^
 @@||weixin.qq.com
+@@||weibo.com
 @@||v.17173.com/advideo/*.mp4
 @@||v.17173.com/advideo/20*.flv
 @@||wrating.com/a1.js$domain=tudou.com|ynet.com
@@ -179,7 +180,6 @@
 @@|http://e.v707070.com/cpc/js/show.js
 @@|http://e.v707070.com/cpc/show
 @@|http://img.70e.com/s_images/s_
-@@||weibo.com/adshow/
 @@|http://cpro.baidustatic.com/cpro/ui/noexpire/css/2.0.1/template.min.css
 @@|http://ad.$domain=abchina.com
 @@||kaixin001.com/ad/
@@ -204,7 +204,6 @@
 @@|http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=receive-a-sms.com
 @@||swjoy.com
 @@|http://prod.game
-@@|http://weibo.com/ggg
 @@||ltzn.9377.com
 @@||minigame.qq.com
 @@|http://d.107788.com/xml/*.swf?s=
@@ -4490,7 +4489,7 @@ sohu.com#@#.label-ad
 ||dytt.net###_hy_img_text_
 ||dytt.net###_hy_img_
 ||dytt.net###_hy_666_
-||pcpop.com##body > div.bg2017 > div > div:nth-child(6),body > div.bg2017 > div > div:nth-child(10),body > div.bg2017 > div > div:nth-child(11),.r1,#ad_960_22,#ad_760_21,#ad_760_22,#ad_760_31,#ad_760_32,#ad_760_41,#ad_760_33
+||pcpop.com##body > div:nth-child(7),body > div:nth-child(11),#ad_960_22,#ad_760_21,#ad_760_22,#ad_760_31,#ad_760_32,#ad_760_41,#ad_760_33
 ||v.17173.com###corner_left
 |http://www.qq.com##body > div:nth-child(12)
 |http://www.qq.com##body > div:nth-child(27)
