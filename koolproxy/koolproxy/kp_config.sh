@@ -5,6 +5,7 @@ eval `dbus export koolproxy`
 # 引用环境变量等
 source /koolshare/scripts/base.sh
 alias echo_date='echo $(date +%Y年%m月%d日\ %X):'
+flag1=1
 
 write_user_txt(){
 	if [ -n "$koolproxy_user_rule" ];then
@@ -14,23 +15,10 @@ write_user_txt(){
 }
 
 start_koolproxy(){
-	rules_date_local=`cat /koolshare/koolproxy/data/version|awk 'NR==2{print}'`
-	rules_nu_local=`grep -v "!x" /koolshare/koolproxy/data/koolproxy.txt | wc -l`
-	video_date_local=`cat /koolshare/koolproxy/data/version|awk 'NR==4{print}'`
-	echo_date 加载静态规则日期：$rules_date_local
-	echo_date 加载静态规则条数：$rules_nu_local
-	dbus set koolproxy_rule_info="更新日期：$rules_date_local / $rules_nu_local条"
-	echo_date 加载视频规则日期：$video_date_local
-	dbus set koolproxy_video_info="更新日期：$video_date_local"
-
 	kp_version=`koolproxy -h | head -n1 | awk '{print $6}'`
 	dbus set koolproxy_binary_version="koolprxoy $kp_version "
-
 	echo_date 开启koolproxy主进程！
-	cd /koolshare/koolproxy
-	[ $koolproxy_policy -eq 3 ] && ARG_VIDEO="-e" || ARG_VIDEO=""
-	koolproxy -d $ARG_VIDEO
-	
+	cd /koolshare/koolproxy && koolproxy -d
 }
 
 stop_koolproxy(){
@@ -312,8 +300,53 @@ detect_cert(){
 	fi
 }
 
+update_kp_rules(){
+	mkdir -p /tmp/kpd
+	rm -rf rm -rf /tmp/kpd/*
+	rule_nu=`dbus list koolproxy_rule_address_|sort -n -t "=" -k 2|cut -d "=" -f 1 | cut -d "_" -f 4`
+	echo_date ================== 规则更新 =================
+	echo_date
+	rm -rf `ls -L /koolshare/koolproxy/data/*_*.dat`
+	rm -rf `ls -L /koolshare/koolproxy/data/*_*.txt`
+	if [ -n "$rule_nu" ]; then
+		for rule in $rule_nu
+		do
+			rule_name=`dbus get koolproxy_rule_name_$rule`
+			rule_addr=`dbus get koolproxy_rule_address_$rule`
+			rule_load=`dbus get koolproxy_rule_load_$rule`
+			file_name=`dbus get koolproxy_rule_address_$rule|grep -Eo "\w+.dat|\w+.txt"`
+			echo_date ① 检测【$rule_name】$file_name 是否有更新...
+			wget -q --timeout=3 --tries=2 $rule_addr -O /tmp/kpd/$rule"_"$file_name
+			if [ "$?" == "0" ]; then
+				MD5_TMP=`md5sum /tmp/kpd/$rule"_"$file_name| awk '{print $1}'`
+				MD5_ORI=`md5sum /koolshare/koolproxy/rule_store/$rule"_"$file_name| awk '{print $1}'`
+				if [ ! -f /koolshare/koolproxy/rule_store/$rule"_"$file_name ] || [ "$MD5_TMP"x != "$MD5_ORI"x ];then
+					echo_date ② 更新【$rule_name】，$rule_addr
+					mv -f /tmp/kpd/$rule"_"$file_name /koolshare/koolproxy/rule_store/
+				else
+					echo_date ② 本地【$rule_name】$file_name 已经是最新！
+				fi
+			else
+				rm -rf rm -rf /tmp/kpd/*
+				echo_date ① 检测规则错误！请检查你的网络到 $rule_addr 的连通性！
+			fi
+			dbus set koolproxy_rule_date_$rule=`ls -l /koolshare/koolproxy/rule_store/$rule"_"$file_name | awk '{print $6,$7,$8}'`
+			[ "$rule_load" == "1" ] && \
+			echo_date ③ 应用规则文件：【$rule_name】$file_name && \
+			ln -sf /koolshare/koolproxy/rule_store/$rule"_"$file_name /koolshare/koolproxy/data/$rule"_"$file_name
+			echo_date 
+		done
+	else
+		echo_date ！！！没有加载任何规则！退出！！！
+		dbus set koolproxy_enable=0
+		exit
+	fi
+}
+
 case $ACTION in
 start)
+	echo_date ================== koolproxy启用 =================
+	update_kp_rules
 	detect_cert
 	start_koolproxy
 	add_ipset_conf && restart_dnsmasq
@@ -328,8 +361,11 @@ start)
 	write_reboot_job
 	add_ss_event
 	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/user.txt /tmp/user.txt
+	echo_date =================================================
 	;;
 restart)
+	# now stop
+	echo_date ================== 关闭 =================
 	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/user.txt /tmp/user.txt
 	remove_ss_event
 	remove_reboot_job
@@ -338,6 +374,9 @@ restart)
 	flush_nat
 	stop_koolproxy
 	kill_cron_job
+	# now start
+	echo_date ================== koolproxy启用 =================
+	update_kp_rules
 	detect_cert
 	start_koolproxy
 	add_ipset_conf && restart_dnsmasq
@@ -352,6 +391,7 @@ restart)
 	write_reboot_job
 	add_ss_event
 	echo_date koolproxy启用成功，请等待日志窗口自动关闭，页面会自动刷新...
+	echo_date =================================================
 	;;
 stop)
 	rm -rf /tmp/user.txt

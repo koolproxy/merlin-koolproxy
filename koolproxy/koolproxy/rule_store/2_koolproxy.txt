@@ -1,7 +1,7 @@
 !x  -----update[rules]:  2017-02-09 23:25 --- by <houzi> <today2004> <sadog>
 !x  -----update[video]:  2017-02-07 22:15 --- by <houzi> <today2004>
 !x  -----base: adblock <koolproxy dedicated>
-!x  -----thanks: xwhyc CJX yiclear adsafe
+!x  -----thanks: xwhyc CJX yiclear adsafe 15536900 kafei
 !x  -------------------------------------- white rules ---------------------------------------------
 @@|http://$domain=code.google.com|yeepay.com|taoke.alimama.com|club.alimama.com|tenpay.com|tmall.com|tbcdn.cn|jd.com
 @@|http://$domain=meidebi.com|alibaba.com|lifevc.com|ad.alimama.com|www.alimama.com|gome.com.cn|3songshu.com
