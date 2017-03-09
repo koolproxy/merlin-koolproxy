@@ -18,15 +18,15 @@
 	],
 	[
 		"视频规则(new)",
-		"http://entware.mirrors.ligux.com/koolproxy/koolproxy.txt",
+		"http://entware.mirrors.ligux.com/koolproxy/1.dat",
 		"none",
 		"2017-3-9 16:31:12"
 	],
 	[
 		"静态规则(new)",
-		"https://rules.ngrok.wang/kill_lol.txt",
+		"http://entware.mirrors.ligux.com/koolproxy/koolproxy.txt",
 		"none",
-		"2017-02-15 09:10:35"
+		"2017-3-9 16:31:12"
 	],
 	[
 		"防败家规则",
