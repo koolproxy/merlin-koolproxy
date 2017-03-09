@@ -16,18 +16,18 @@
 		"none",
 		"2017-02-15 09:10:35"
 	],
-	//[
-	//	"不健康网址屏蔽",
-	//	"https://rules.ngrok.wang/green.dat",
-	//	"none",
-	//	"2017-02-15 09:10:35"
-	//],
-	//[
-	//	"拯救室友规则",
-	//	"https://rules.ngrok.wang/kill_lol.txt",
-	//	"none",
-	//	"2017-02-15 09:10:35"
-	//],
+	[
+		"视频规则(new)",
+		"http://entware.mirrors.ligux.com/koolproxy/koolproxy.txt",
+		"none",
+		"2017-3-9 16:31:12"
+	],
+	[
+		"静态规则(new)",
+		"https://rules.ngrok.wang/kill_lol.txt",
+		"none",
+		"2017-02-15 09:10:35"
+	],
 	[
 		"防败家规则",
 		"https://rules.ngrok.wang/no_shopping.txt",
