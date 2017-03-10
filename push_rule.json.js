@@ -17,13 +17,13 @@
 		"2017-02-15 09:10:35"
 	],
 	[
-		"视频规则(new)[请勿与上面的视频规则一起使用]",
+		"视频规则(new)",
 		"http://entware.mirrors.ligux.com/koolproxy/1.dat",
 		"none",
 		"2017-3-9 16:31:12"
 	],
 	[
-		"静态规则(new)[请勿与上面的静态规则一起使用]",
+		"静态规则(new)",
 		"http://entware.mirrors.ligux.com/koolproxy/koolproxy.txt",
 		"none",
 		"2017-3-9 16:31:12"
