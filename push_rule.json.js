@@ -5,18 +5,6 @@
 	"rules":
 	[
 	[
-		"视频规则",
-		"https://rules.ngrok.wang/1.dat",
-		"none",
-		"2017-02-15 09:10:29"
-	],
-	[
-		"静态规则",
-		"https://rules.ngrok.wang/koolproxy.txt",
-		"none",
-		"2017-02-15 09:10:35"
-	],
-	[
 		"视频规则(new)",
 		"http://entware.mirrors.ligux.com/koolproxy/1.dat",
 		"none",
@@ -29,8 +17,8 @@
 		"2017-3-9 16:31:12"
 	],
 	[
-		"防败家规则",
-		"https://rules.ngrok.wang/no_shopping.txt",
+		"0day规则",
+		"http://entware.mirrors.ligux.com/koolproxy/add_rules.txt",
 		"none",
 		"2017-02-15 09:10:35"
 	]
