@@ -16,7 +16,7 @@ write_user_txt(){
 
 start_koolproxy(){
 	kp_version=`koolproxy -h | head -n1 | awk '{print $6}'`
-	dbus set koolproxy_binary_version="koolprxoy $kp_version "
+	dbus set koolproxy_binary_version="koolproxy $kp_version "
 	echo_date 开启koolproxy主进程！
 	cd /koolshare/koolproxy && koolproxy -d
 }
