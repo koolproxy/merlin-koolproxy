@@ -21,6 +21,12 @@
 		"http://entware.mirrors.ligux.com/koolproxy/add_rules.txt",
 		"none",
 		"2017-02-15 09:10:35"
+	],
+	[
+		"拯救室友规则",
+		"http://entware.mirrors.ligux.com/koolproxy/filter_game.txt",
+		"none",
+		"2017-03-27 09:10:35"
 	]
 	]
 }
