@@ -27,6 +27,12 @@
 		"http://entware.mirrors.ligux.com/koolproxy/filter_game.txt",
 		"none",
 		"2017-03-27 09:10:35"
+	],
+	[
+		"爪机浏览器规则",
+		"https://coding.net/u/Carseason/p/koolproxy/git/raw/master/koolproxy_wp.txt",
+		"none",
+		"2017-03-29 21:46:35"
 	]
 	]
 }
