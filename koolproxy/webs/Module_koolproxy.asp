@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
@@ -1181,15 +1181,17 @@ function hideRules_Block(){
 									<td bgcolor="#4D595D" colspan="3" valign="top">
 										<div>&nbsp;</div>
 										<div style="float:left;" class="formfonttitle"><em>KoolProxy - <% dbus_get_def("koolproxy_version", "null"); %></em></div>
-										<div style="float:right; width:15px; height:25px;margin-top:10px"><img id="return_btn" onclick="reload_Soft_Center();" align="right" style="cursor:pointer;position:absolute;margin-left:-30px;margin-top:-25px;" title="返回软件中心" src="/images/backprev.png" onMouseOver="this.src='/images/backprevclick.png'" onMouseOut="this.src='/images/backprev.png'"></img></div>
+										<div style="float:right; width:15px; height:25px;margin-top:10px">
+											<img id="return_btn" onclick="reload_Soft_Center();" align="right" style="cursor:pointer;position:absolute;margin-left:-30px;margin-top:-25px;" title="返回软件中心" src="/images/backprev.png" onMouseOver="this.src='/images/backprevclick.png'" onMouseOut="this.src='/images/backprev.png'">
+										</div>
 										<div style="margin-left:5px;margin-top:10px;margin-bottom:10px"><img src="/images/New_ui/export/line_export.png"></div>
 										<div class="SimpleNote" style="display:none" id="head_illustrate1"></div>
 										<div class="SimpleNote" style="display:none" id="head_illustrate2"></div>
 										<div class="SimpleNote" style="display:none" id="head_illustrate3"></div>
-										<div style="margin-top: 0px;text-align: center;font-size: 18px;margin-bottom: 0px;"class="formfontdesc" id="cmdDesc"></div>
+										<div style="margin-top: 0px;text-align: center;font-size: 18px;margin-bottom: 0px;" class="formfontdesc" id="cmdDesc"></div>
 										<!-- this is the popup area for user rules -->
 										<div id="vpnc_settings"  class="contentM_qis" style="box-shadow: 3px 3px 10px #000;margin-top: -65px;">
-											<div class="user_title">koolproxy自定义规则</i></div>
+											<div class="user_title">koolproxy自定义规则</div>
 											<div style="margin-left:15px"><i>1&nbsp;&nbsp;点击【保存文件】按钮，文本框内的内容会保存到/koolshare/koolproxy/data/user.txt。</i></div>
 											<div style="margin-left:15px"><i>2&nbsp;&nbsp;如果你更改了user.txt，你需要重新重启koolproxy插件才，新加入的规则才能生效。</i></div>
 											<div style="margin-left:15px"><i>3&nbsp;&nbsp;虽然koolproxy支持adblock规则，但是我们一点都不建议你直接使用他们的规则内容，因为这极可能导致规则冲突。</i></div>
@@ -1278,7 +1280,7 @@ function hideRules_Block(){
 													
 													<input class="kp_btn" onclick="start_update()" style="cursor:pointer;" type="submit" value="手动更新" />
 													<input class="kp_btn" onclick="open_user_rule()" style="cursor:pointer;" type="submit" value="自定规则" />
-													<input class="kp_btn" id="koolproxy_github" onclick="open_rule_github()" style="cursor:pointer;" type="submit" value="规则反馈" />
+													<input class="kp_btn" id="koolproxy_github" style="cursor:pointer;" type="submit" value="规则反馈" />
 												</td>
 											</tr>
 											<tr id="auto_reboot_switch">
@@ -1326,7 +1328,7 @@ function hideRules_Block(){
 												<th width="35%">证书下载（用于https过滤）</th>
 												<td>
 													<input type="button" id="download_cert" class="kp_btn" style="cursor:pointer" value="证书下载">
-													<a class="kp_btn" href="http://koolshare.cn/thread-80430-1-1.html" target="_blank">https过滤使用教程<a>
+													<a class="kp_btn" href="http://koolshare.cn/thread-80430-1-1.html" target="_blank">https过滤使用教程</a>
 												</td>
 											</tr>
 											<tr id="klloproxy_com">
@@ -1352,7 +1354,7 @@ function hideRules_Block(){
 											</tr>
 											<tr>
 												<td>
-													<input type="text" maxlength="15" class="input_12_table" id="koolproxy_rule_name" name="koolproxy_rule_name" align="left" onkeypress="return validator.isIPAddr(this, event)" style="float:left;"/ autocomplete="off" onClick="hideClients_Block();" autocorrect="off" autocapitalize="off">
+													<input type="text" maxlength="15" class="input_12_table" id="koolproxy_rule_name" name="koolproxy_rule_name" align="left" onkeypress="return validator.isIPAddr(this, event)" style="float:left;" autocomplete="off" onClick="hideClients_Block();" autocorrect="off" autocapitalize="off">
 													<img id="pull_arrow" height="14px;" src="images/arrow-down.gif" align="right" onclick="pullQoSList(this);" title="选择自带规则">
 													<div id="QoSList_Block" class="QoSList_Block" style="margin-left:2px;margin-top:25px;width:auto;height:auto"></div>
 												</td>
@@ -1389,7 +1391,7 @@ function hideRules_Block(){
 											</tr>
 											<tr>
 												<td>
-													<input type="text" maxlength="15" class="input_15_table" id="koolproxy_acl_ip" name="koolproxy_acl_ip" align="left" onkeypress="return validator.isIPAddr(this, event)" style="float:left;"/ autocomplete="off" onClick="hideClients_Block();" autocorrect="off" autocapitalize="off">
+													<input type="text" maxlength="15" class="input_15_table" id="koolproxy_acl_ip" name="koolproxy_acl_ip" align="left" onkeypress="return validator.isIPAddr(this, event)" style="float:left;" autocomplete="off" onClick="hideClients_Block();" autocorrect="off" autocapitalize="off">
 													<img id="pull_arrow" height="14px;" src="images/arrow-down.gif" align="right" onclick="pullLANIPList(this);" title="<#select_IP#>">
 													<div id="ClientList_Block" class="clientlist_dropdown" style="margin-left:2px;margin-top:25px;"></div>
 												</td>
@@ -1432,7 +1434,6 @@ function hideRules_Block(){
 		</tr>
 	</table>
 	</form>
-	</td>
 	<div id="footer"></div>
 </body>
 </html>
