@@ -6,25 +6,25 @@
 	[
 	[
 		"视频规则(new)",
-		"http://entware.mirrors.ligux.com/koolproxy/1.dat",
+		"http://koolshare.b0.upaiyun.com/rules/1.dat",
 		"none",
 		"2017-3-9 16:31:12"
 	],
 	[
 		"静态规则(new)",
-		"http://entware.mirrors.ligux.com/koolproxy/koolproxy.txt",
+		"http://koolshare.b0.upaiyun.com/rules/koolproxy.txt",
 		"none",
 		"2017-3-9 16:31:12"
 	],
 	[
 		"0day规则",
-		"http://entware.mirrors.ligux.com/koolproxy/add_rules.txt",
+		"http://koolshare.b0.upaiyun.com/rules/add_rules.txt",
 		"none",
 		"2017-02-15 09:10:35"
 	],
 	[
 		"拯救室友规则",
-		"http://entware.mirrors.ligux.com/koolproxy/filter_game.txt",
+		"http://koolshare.b0.upaiyun.com/rules/filter_game.txt",
 		"none",
 		"2017-03-27 09:10:35"
 	],
