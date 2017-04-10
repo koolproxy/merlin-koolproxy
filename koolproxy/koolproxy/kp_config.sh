@@ -255,9 +255,9 @@ load_nat(){
 	iptables -t nat -A KOOLPROXY -m set --match-set white_kp_list dst -j RETURN
 	#  生成对应CHAIN
 	iptables -t nat -N KOOLPROXY_HTTP
-	iptables -t nat -A KOOLPROXY_HTTP -p tcp -m multiport --dport 80,82,8080 -j REDIRECT --to-ports 3000
+	iptables -t nat -A KOOLPROXY_HTTP -p tcp -m multiport --dport 80,$koolproxy_ext_ports -j REDIRECT --to-ports 3000
 	iptables -t nat -N KOOLPROXY_HTTPS
-	iptables -t nat -A KOOLPROXY_HTTPS -p tcp -m multiport --dport 80,82,443,8080 -j REDIRECT --to-ports 3000
+	iptables -t nat -A KOOLPROXY_HTTPS -p tcp -m multiport --dport 80,443,$koolproxy_ext_ports -j REDIRECT --to-ports 3000
 	# 局域网控制
 	lan_acess_control
 	# 剩余流量转发到缺省规则定义的链中

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
@@ -313,6 +313,7 @@ function buildswitch(){
 		if(document.getElementById('switch').checked){
 			document.form.koolproxy_enable.value = 1;
 			document.getElementById("policy_tr").style.display = "";
+			document.getElementById("ports_tr").style.display = "";
 			document.getElementById("kp_status").style.display = "";
 			document.getElementById("rule_update_switch").style.display = "";
 			document.getElementById("auto_reboot_switch").style.display = "";
@@ -326,6 +327,7 @@ function buildswitch(){
 		}else{
 			document.form.koolproxy_enable.value = 0;
 			document.getElementById("policy_tr").style.display = "none";
+			document.getElementById("ports_tr").style.display = "none";
 			document.getElementById("kp_status").style.display = "none";
 			document.getElementById("rule_update_switch").style.display = "none";
 			document.getElementById("auto_reboot_switch").style.display = "none";
@@ -365,7 +367,6 @@ function reload_Soft_Center(){
 function update_visibility1(){
 	showhide("koolproxy_policy_read1", (document.form.koolproxy_policy.value == 1));
 	showhide("koolproxy_policy_read2", (document.form.koolproxy_policy.value == 2));
-	showhide("koolproxy_policy_read3", (document.form.koolproxy_policy.value == 3));
 	showhide("koolproxy_update_hour_span", (document.form.koolproxy_update.value == 1));
 	showhide("koolproxy_update_interval_span", (document.form.koolproxy_update.value == 2));
 	showhide("koolproxy_reboot_hour_span", (document.form.koolproxy_reboot.value == 1));
@@ -375,6 +376,7 @@ function update_visibility1(){
 function update_visibility(){
 	if(db_koolproxy["koolproxy_enable"] == "1"){
 		document.getElementById("policy_tr").style.display = "";
+		document.getElementById("ports_tr").style.display = "";
 		document.getElementById("rule_update_switch").style.display = "";
 		document.getElementById("kp_status").style.display = "";
 		document.getElementById("auto_reboot_switch").style.display = "";
@@ -387,6 +389,7 @@ function update_visibility(){
 		document.getElementById("RULE_note").style.display = "";
 	}else{
 		document.getElementById("policy_tr").style.display = "none";
+		document.getElementById("ports_tr").style.display = "none";
 		document.getElementById("rule_update_switch").style.display = "none";
 		document.getElementById("kp_status").style.display = "none";
 		document.getElementById("auto_reboot_switch").style.display = "none";
@@ -1243,9 +1246,15 @@ function hideRules_Block(){
 														<option value="1" selected>全局模式</option>
 														<option value="2">ipset模式</option>
 													</select>
-														<span id="koolproxy_policy_read1" style="display: none;">全局模式所有80/443端口的流量都会走koolproxy过，过滤效果最好。</span>
-														<span id="koolproxy_policy_read2" style="display: none;">只有黑名单内的域名走koolproxy(基于ipset)，效果不及全局模式。</span>
-														<span id="koolproxy_policy_read3" style="display: none;">视频模式和全局过滤类似，但是只加载视频规则，不加载静态规则。</span>
+														<span id="koolproxy_policy_read1" style="display: none;">&nbsp;&nbsp;全局模式所有80/443端口的流量都会走koolproxy过，过滤效果最好。</span>
+														<span id="koolproxy_policy_read2" style="display: none;">&nbsp;&nbsp;只有黑名单内的域名走koolproxy(基于ipset)，效果不及全局模式。</span>
+												</td>
+											</tr>
+											<tr id="ports_tr">
+												<th>额外过滤端口</th>
+												<td>
+													<input type="text" cols="1" class="input_ss_table" style="width:164px;" autocorrect="off" autocapitalize="off" id="koolproxy_ext_ports" name="koolproxy_ext_ports" value="82,8080" />
+													<span>&nbsp;&nbsp;除80/443外，额外需要过滤的端口。</span>
 												</td>
 											</tr>
 											<tr id="rule_update_switch">
@@ -1373,8 +1382,10 @@ function hideRules_Block(){
 											</tr>
 										</table>
 										<div id="RULE_note" style="margin-top: 5px;">
+											<div></div>
 											<div><i>1&nbsp;&nbsp;订阅第三方规则（例如adblock, adbyby, chinalist, easylist等）会导致兼容性问题，请确保你订阅的第三方规则支持koolproxy！</i></div>
 											<div><i>2&nbsp;&nbsp;规则下拉菜单里提供了一些基础的koolproxy兼容规则，如果你想自己开发并共享为第三方规则，可以参考此<a href="https://github.com/koolproxy/koolproxy_rules/blob/master/user.txt" target="_blank"><em>规则书写语法</em></a>。</i></div>
+
 										</div>
 										<table id="ACL_table" style="margin:10px 0px 0px 0px;" width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable" >
 											<thead>

@@ -62,13 +62,13 @@ rm -rf /tmp/koolproxy* >/dev/null 2>&1
 [ -z "$koolproxy_policy" ] && dbus set koolproxy_policy=1
 [ -z "$koolproxy_acl_default_mode" ] && dbus set koolproxy_acl_default_mode=1
 [ -z `dbus list koolproxy_rule_name_` ] && dbus set koolproxy_rule_name_1="视频规则(new)" && dbus set koolproxy_rule_name_2="静态规则(new)"
-[ -z `dbus list koolproxy_rule_address_` ] && dbus set koolproxy_rule_address_1="http://entware.mirrors.ligux.com/koolproxy/1.dat" && && dbus set koolproxy_rule_address_2="http://entware.mirrors.ligux.com/koolproxy/koolproxy.txt"
+[ -z `dbus list koolproxy_rule_address_` ] && dbus set koolproxy_rule_address_1="http://koolshare.b0.upaiyun.com/rules/1.dat" && dbus set koolproxy_rule_address_2="http://koolshare.b0.upaiyun.com/rules/koolproxy.txt" && dbus set koolproxy_rule_address_3="http://koolshare.b0.upaiyun.com/rules/add_rules.txt"
 [ -z `dbus list koolproxy_rule_load_` ] && dbus set koolproxy_rule_load_1="1" && dbus set koolproxy_rule_load_2="1"
 [ -z `dbus list koolproxy_rule_date_` ] && dbus set koolproxy_rule_date_1="Mar 27 10:02" && dbus set koolproxy_rule_date_2="Mar 27 10:02"
 
 dbus set koolproxy_rule_info=`cat /koolshare/koolproxy/data/version | awk 'NR==2{print}'`
 dbus set koolproxy_video_info=`cat /koolshare/koolproxy/data/version | awk 'NR==4{print}'`
 dbus set softcenter_module_koolproxy_install=1
-dbus set softcenter_module_koolproxy_version=3.3.5
-dbus set koolproxy_version=3.3.5
+dbus set softcenter_module_koolproxy_version=3.3.6.1
+dbus set koolproxy_version=3.3.6.1
 
