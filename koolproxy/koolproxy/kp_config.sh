@@ -9,7 +9,7 @@ flag1=1
 
 write_user_txt(){
 	if [ -n "$koolproxy_user_rule" ];then
-		echo $koolproxy_user_rule | base64_decode > /koolshare/koolproxy/data/user.txt
+		echo $koolproxy_user_rule | base64_decode > /koolshare/koolproxy/data/rules/user.txt
 		dbus remove koolproxy_user_rule
 	fi
 }
@@ -306,13 +306,13 @@ start)
 	write_nat_start
 	write_reboot_job
 	add_ss_event
-	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/user.txt /tmp/user.txt
+	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
 	echo_date =================================================
 	;;
 restart)
 	# now stop
 	echo_date ================== 关闭 =================
-	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/user.txt /tmp/user.txt
+	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
 	remove_ss_event
 	remove_reboot_job
 	remove_ipset_conf
