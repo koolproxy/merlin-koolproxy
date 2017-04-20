@@ -157,8 +157,6 @@ function init(menu_hook) {
     }
     refresh_acl_table();
     setTimeout("showDropdownClientList('setClientIP', 'ip', 'all', 'ClientList_Block', 'pull_arrow', 'online');", 1000);
-	showQoSList();
-    refresh_rule_table();
     update_visibility();
 	update_visibility1();
 	$j("#log_content2").click(
@@ -178,24 +176,16 @@ function init(menu_hook) {
 
 function generate_options(){
 	for(var i = 0; i < 24; i++) {
-		$j("#koolproxy_update_hour").append("<option value='"  + i + "'>" + i + "点</option>");
 		$j("#koolproxy_reboot_hour").append("<option value='"  + i + "'>" + i + "点</option>");
-		$j("#koolproxy_update_hour").val(3);
 		$j("#koolproxy_reboot_hour").val(3);
 	}
 	for(var i = 1; i < 73; i++) {
 		$j("#koolproxy_reboot_inter_hour").append("<option value='"  + i + "'>" + i + "时</option>");
-		$j("#koolproxy_update_inter_hour").append("<option value='"  + i + "'>" + i + "时</option>");
 		$j("#koolproxy_reboot_inter_hour").val(72);
-		$j("#koolproxy_update_inter_hour").val(24);
 	}
 	for(var i = 0; i < 60; i++) {
-		$j("#koolproxy_update_min").append("<option value='"  + i + "'>" + i + "分</option>");
-		$j("#koolproxy_update_inter_min").append("<option value='"  + i + "'>" + i + "分</option>");
 		$j("#koolproxy_reboot_min").append("<option value='"  + i + "'>" + i + "分</option>");
 		$j("#koolproxy_reboot_inter_min").append("<option value='"  + i + "'>" + i + "分</option>");
-		$j("#koolproxy_update_min").val(30);
-		$j("#koolproxy_update_inter_min").val(0);
 		$j("#koolproxy_reboot_min").val(30);
 		$j("#koolproxy_reboot_inter_min").val(0);
 	}
@@ -226,7 +216,9 @@ function check_KP_status(){
 			var _cmdBtn = document.getElementById("cmdBtn");
 			if(response.search("XU6J03M6") != -1){
 				kp_status = response.replace("XU6J03M6", " ");
-				document.getElementById("status").innerHTML = kp_status;
+				document.getElementById("status").innerHTML = kp_status.split("@@")[0];
+				document.getElementById("rule_date_web").innerHTML = kp_status.split("@@")[1];
+				document.getElementById("video_date_web").innerHTML = kp_status.split("@@")[2];
 				return true;
 			}
 			
@@ -315,29 +307,25 @@ function buildswitch(){
 			document.getElementById("policy_tr").style.display = "";
 			document.getElementById("ports_tr").style.display = "";
 			document.getElementById("kp_status").style.display = "";
-			document.getElementById("rule_update_switch").style.display = "";
 			document.getElementById("auto_reboot_switch").style.display = "";
+			document.getElementById("rule_update_switch").style.display = "";
 			document.getElementById("cert_download_tr").style.display = "";
 			document.getElementById("klloproxy_com").style.display = "";
 			document.getElementById("acl_method_tr").style.display = "";
 			document.getElementById("ACL_table").style.display = "";
 			document.getElementById("ACL_note").style.display = "";
-			document.getElementById("RULE_table").style.display = "";
-			document.getElementById("RULE_note").style.display = "";
 		}else{
 			document.form.koolproxy_enable.value = 0;
 			document.getElementById("policy_tr").style.display = "none";
 			document.getElementById("ports_tr").style.display = "none";
 			document.getElementById("kp_status").style.display = "none";
-			document.getElementById("rule_update_switch").style.display = "none";
 			document.getElementById("auto_reboot_switch").style.display = "none";
+			document.getElementById("rule_update_switch").style.display = "none";
 			document.getElementById("cert_download_tr").style.display = "none";
 			document.getElementById("klloproxy_com").style.display = "none";
 			document.getElementById("acl_method_tr").style.display = "none";
 			document.getElementById("ACL_table").style.display = "none";
 			document.getElementById("ACL_note").style.display = "none";
-			document.getElementById("RULE_table").style.display = "none";
-			document.getElementById("RULE_note").style.display = "none";
 		}
 	});
 }
@@ -367,8 +355,6 @@ function reload_Soft_Center(){
 function update_visibility1(){
 	showhide("koolproxy_policy_read1", (document.form.koolproxy_policy.value == 1));
 	showhide("koolproxy_policy_read2", (document.form.koolproxy_policy.value == 2));
-	showhide("koolproxy_update_hour_span", (document.form.koolproxy_update.value == 1));
-	showhide("koolproxy_update_interval_span", (document.form.koolproxy_update.value == 2));
 	showhide("koolproxy_reboot_hour_span", (document.form.koolproxy_reboot.value == 1));
 	showhide("koolproxy_reboot_interval_span", (document.form.koolproxy_reboot.value == 2));
 }
@@ -377,43 +363,27 @@ function update_visibility(){
 	if(db_koolproxy["koolproxy_enable"] == "1"){
 		document.getElementById("policy_tr").style.display = "";
 		document.getElementById("ports_tr").style.display = "";
-		document.getElementById("rule_update_switch").style.display = "";
 		document.getElementById("kp_status").style.display = "";
 		document.getElementById("auto_reboot_switch").style.display = "";
+		document.getElementById("rule_update_switch").style.display = "";
 		document.getElementById("cert_download_tr").style.display = "";
 		document.getElementById("klloproxy_com").style.display = "";
 		document.getElementById("acl_method_tr").style.display = "";
 		document.getElementById("ACL_table").style.display = "";
 		document.getElementById("ACL_note").style.display = "";
-		document.getElementById("RULE_table").style.display = "";
-		document.getElementById("RULE_note").style.display = "";
 	}else{
 		document.getElementById("policy_tr").style.display = "none";
 		document.getElementById("ports_tr").style.display = "none";
-		document.getElementById("rule_update_switch").style.display = "none";
 		document.getElementById("kp_status").style.display = "none";
 		document.getElementById("auto_reboot_switch").style.display = "none";
+		document.getElementById("rule_update_switch").style.display = "none";
 		document.getElementById("cert_download_tr").style.display = "none";
 		document.getElementById("klloproxy_com").style.display = "none";
 		document.getElementById("acl_method_tr").style.display = "none";
 		document.getElementById("ACL_table").style.display = "none";
 		document.getElementById("ACL_note").style.display = "none";
-		document.getElementById("RULE_table").style.display = "none";
-		document.getElementById("RULE_note").style.display = "none";
 	}
 }
-
-function start_update() {
-	document.form.koolproxy_basic_action.value = 2;
-	document.form.action_mode.value = ' Refresh ';
-	document.form.action = "/applydb.cgi?p=koolproxy";
-	document.form.SystemCmd.value = "koolproxy_rule_update.sh";
-	showKPLoadingBar();
-	document.form.submit();
-	noChange = 0;
-	setTimeout("checkCmdRet();", 500);
-}
-
 
 
 function checkCmdRet() {
@@ -893,243 +863,6 @@ function close_user_rule(){
 }
 
 
-function getRuleConfigs() {
-	var dict = {};
-	rule_node_max = 0;
-	for (var field in db_koolproxy) {
-		names = field.split("_");
-		dict[names[names.length - 1]] = 'ok';
-	}
-	rule_confs = {};
-	var p = "koolproxy_rule";
-	var params = ["name", "address", "load"];
-	for (var field in dict) {
-		var obj = {};
-		if (typeof db_koolproxy[p + "_date_" + field] == "undefined") {
-			obj["date"] = '尚未初始化';
-		} else {
-			obj["date"] = db_koolproxy[p + "_date_" + field];
-		}
-		for (var i = 0; i < params.length; i++) {
-			var ofield = p + "_" + params[i] + "_" + field;
-			if (typeof db_koolproxy[ofield] == "undefined") {
-				obj = null;
-				break;
-			}
-			obj[params[i]] = db_koolproxy[ofield];
-		}
-		if (obj != null) {
-			var node_a = parseInt(field);
-			if (node_a > rule_node_max) {
-				rule_node_max = node_a;
-			}
-			obj["rule_node"] = field;
-			rule_confs[field] = obj;
-		}
-	}
-	return rule_confs;
-}
-
-
-function addRuleTr() {
-	var rules = {};
-	var p = "koolproxy_rule";
-	rule_node_max += 1;
-	var params = ["name", "address"];
-	oncheckclick(koolproxy_rule_load);
-	for (var i = 0; i < rule_node_max; i++) {
-		if ($j('#koolproxy_rule_address').val() == db_koolproxy["koolproxy_rule_address_" + i]){
-			alert("你已经添加了相同的规则了！");
-			document.form.koolproxy_rule_name.value = "";
-			document.form.koolproxy_rule_address.value = "";
-			$G("koolproxy_rule_load").checked = false;
-			return false;
-		}
-	}
-	rules["koolproxy_rule_name_" + rule_node_max] = $j('#koolproxy_rule_name').val();
-	rules["koolproxy_rule_address_" + rule_node_max] = $j('#koolproxy_rule_address').val();
-	rules["koolproxy_rule_load_" + rule_node_max] = $j('#hd_koolproxy_rule_load').val();
-	$j.ajax({
-		url: '/applydb.cgi?p=koolproxy_rule',
-		contentType: "application/x-www-form-urlencoded",
-		dataType: 'text',
-		data: $j.param(rules),
-		error: function(xhr) {
-			console.log("error in posting config of table");
-		},
-		success: function(response) {
-			refresh_rule_table();
-			document.form.koolproxy_rule_name.value = "";
-			document.form.koolproxy_rule_address.value = "";
-			$G("koolproxy_rule_load").checked = false;
-		}
-	});
-	ruleid = 0;
-}
-
-
-function oncheckclick(obj) {
-	if (obj.checked) {
-		document.form["hd_" + obj.id].value = "1";
-	} else {
-		document.form["hd_" + obj.id].value = "0";
-	}
-}
-
-function refresh_rule_table() {
-	$j.ajax({
-		url: '/dbconf?p=koolproxy',
-		dataType: 'html',
-		error: function(xhr) {},
-		success: function(response) {
-			$j.globalEval(response);
-			$j("#RULE_table").find("tr:gt(2)").remove();
-			$j('#RULE_table tr:last').after(refresh_rule_html());
-			for (var i = 1; i < rule_node_max + 1; i++) {
-				$j('#koolproxy_rule_name_' + i).val(db_koolproxy["koolproxy_rule_name_" + i]);
-				$j('#koolproxy_rule_address_' + i).val(db_koolproxy["koolproxy_rule_address_" + i]);
-				for (var field in db_koolproxy) {
-					var el = $G(field);
-					if (el != null && el.getAttribute("type") == "checkbox") {
-						if (db_koolproxy[field] != "1") {
-							el.checked = false;
-							$G("hd_" + field).value = "0";
-						} else {
-							el.checked = true;
-							$G("hd_" + field).value = "1";
-						}
-					}
-				}
-			}
-		}
-	});
-}
-
-function refresh_rule_html() {
-	rule_confs = getRuleConfigs();
-	var n = 0;
-	for (var i in rule_confs) {
-		n++;
-	}
-	var code = '';
-	for (var field in rule_confs) {
-		var rl = rule_confs[field];
-		code = code + '<tr>';
-		code = code + '<td>';
-		code = code + '<input type="text" placeholder="" id="koolproxy_rule_name_' + rl["rule_node"] + '" name="koolproxy_rule_name_' + rl["rule_node"] + '" class="input_option_2" maxlength="50" style="width:140px;" value="' + rl["name"] + '" />';
-		code = code + '</td>';
-		code = code + '<td>';
-		code = code + '<input type="text" placeholder="" id="koolproxy_rule_address_' + rl["rule_node"] + '" name="koolproxy_rule_address_' + rl["rule_node"] + '" class="input_option_2" maxlength="50" style="width:300px;font-size:10px;" value="' + rl["address"] + '" />';
-		code = code + '</td>';
-		code = code + '<td>';
-		code = code + '<input type="text" id="koolproxy_rule_date_' + rl["rule_node"] + '" name="koolproxy_rule_date_' + rl["rule_node"] + '" class="input_option_2" maxlength="50" style="width:100px;font-size:10px;" value="' + rl["date"] + '" disabled />';
-		code = code + '</td>';
-       	code = code + '<td>';
-       	code = code + '<input type="checkbox" id="koolproxy_rule_load_' + rl["rule_node"] + '" onclick="oncheckclick(this);">';
-       	code = code + '<input type="hidden" id="hd_koolproxy_rule_load_' + rl["rule_node"] + '" name="koolproxy_rule_load_' + rl["rule_node"] + '" onclick="oncheckclick(this);">';
-       	code = code + '</td>';
-		code = code + '<td>';
-		code = code + '<input style="margin: -3px 0px -5px 6px;" id="rule_node_' + rl["rule_node"] + '" class="remove_btn" type="button" onclick="delRuleTr(this);" value="">'
-		code = code + '</td>';
-		code = code + '</tr>';
-	}
-	return code;
-}
-
-
-function delRuleTr(o) {
-	var id = $j(o).attr("id");
-	var ids = id.split("_");
-	var p = "koolproxy_rule";
-	id = ids[ids.length - 1];
-	var rules = {};
-	var params = ["name", "address", "load"];
-	for (var i = 0; i < params.length; i++) {
-		rules[p + "_" + params[i] + "_" + id] = "";
-	}
-	$j.ajax({
-		url: '/applydb.cgi?use_rm=1&p=koolproxy_rule',
-		contentType: "application/x-www-form-urlencoded",
-		dataType: 'text',
-		data: $j.param(rules),
-		error: function(xhr) {
-			console.log("error in posting config of table");
-		},
-		success: function(response) {
-			refresh_rule_table();
-		}
-	});
-}
-var rule_lists = new Array();
-var online_flag = 0;
-
-function showQoSList(){
-    $j.ajax({
-        url: 'https://koolshare.ngrok.wang/koolproxy/push_rule.json.js',
-        type: 'GET',
-        dataType: 'jsonp',
-        success: function(res) {
-	        if (res.hi1){
-	        	$G("head_illustrate1").style.display = "";
-				$j("#head_illustrate1").html(res.hi1);
-	        }
-	        if (res.hi2){
-	        	$G("head_illustrate2").style.display = "";
-				$j("#head_illustrate2").html(res.hi2);
-	        }
-	        if (res.hi3){
-	        	$G("head_illustrate3").style.display = "";
-				$j("#head_illustrate3").html(res.hi3);
-	        }
-			if (res.rules){
-				rule_lists=res.rules
-				var code = "";
-				for(var i = 0; i < rule_lists.length; i++){
-					code += '<a><div onclick="setClientRule(' + [i] + ');">'+rule_lists[i][0]+'</div></a>';
-				}
-				code +='<!--[if lte IE 6.5]><iframe class="hackiframe2"></iframe><![endif]-->';	
-				document.getElementById("QoSList_Block").innerHTML = code;
-				return online_flag = 1;
-			}
-        }
-
-    });
-   	if(online_flag == 0){
-		rule_lists = [["视频规则", "https:\/\/rules.ngrok.wang\/1.dat"], ["静态规则", "https:\/\/rules.ngrok.wang\/koolproxy.txt"]];
-		var code = "";
-		for(var i = 0; i < rule_lists.length; i++){
-			code += '<a><div onclick="setClientRule(' + [i] + ');">'+rule_lists[i][0]+'</div></a>';
-		}
-		code +='<!--[if lte IE 6.5]><iframe class="hackiframe2"></iframe><![endif]-->';	
-		document.getElementById("QoSList_Block").innerHTML = code;	
-   	}
-    
-}
-
-var isMenuopen = 0;
-function pullQoSList(obj){
-	if(isMenuopen == 0){
-		obj.src = "/images/arrow-top.gif"
-		document.getElementById("QoSList_Block").style.display = 'block';
-		isMenuopen = 1;
-	}
-	else{
-		hideRules_Block();
-	}
-}
-
-
-function setClientRule(rule){
-	document.form.koolproxy_rule_name.value = rule_lists[rule][0];
-	document.form.koolproxy_rule_address.value = rule_lists[rule][1];
-	hideRules_Block();
-}
-
-function hideRules_Block(){
-	document.getElementById("pull_arrow").src = "/images/arrow-down.gif";
-	document.getElementById('QoSList_Block').style.display='none';
-	isMenuopen = 0;
-}
 
 </script>
 </head>
@@ -1183,15 +916,40 @@ function hideRules_Block(){
 								<tr>
 									<td bgcolor="#4D595D" colspan="3" valign="top">
 										<div>&nbsp;</div>
-										<div style="float:left;" class="formfonttitle"><em>KoolProxy - <% dbus_get_def("koolproxy_version", "null"); %></em></div>
-										<div style="float:right; width:15px; height:25px;margin-top:10px">
-											<img id="return_btn" onclick="reload_Soft_Center();" align="right" style="cursor:pointer;position:absolute;margin-left:-30px;margin-top:-25px;" title="返回软件中心" src="/images/backprev.png" onMouseOver="this.src='/images/backprevclick.png'" onMouseOut="this.src='/images/backprev.png'">
-										</div>
-										<div style="margin-left:5px;margin-top:10px;margin-bottom:10px"><img src="/images/New_ui/export/line_export.png"></div>
-										<div class="SimpleNote" style="display:none" id="head_illustrate1"></div>
-										<div class="SimpleNote" style="display:none" id="head_illustrate2"></div>
-										<div class="SimpleNote" style="display:none" id="head_illustrate3"></div>
-										<div style="margin-top: 0px;text-align: center;font-size: 18px;margin-bottom: 0px;" class="formfontdesc" id="cmdDesc"></div>
+											<table width="100%" height="150px" style="border-collapse:collapse;">
+                                            <tr>
+                                                <td colspan="5" class="cloud_main_radius">
+                                                    <div style="padding:10px;width:95%;font-style:italic;font-size:14px;">
+                                                        <br/><br/>
+                                                        <table width="100%" >
+                                                            <tr>
+                                                                <td>
+                                                                    <ul style="margin-top:-70px;padding-left:15px;" >
+                                                                        <li style="margin-top:-5px;">
+                                                                            <h2 id="push_titile"><em>KoolProxy</em></h2>
+                                                                            <div style="float:auto; width:15px; height:25px;margin-top:-40px;margin-left:680px"><img id="return_btn" onclick="reload_Soft_Center();" align="right" style="cursor:pointer;position:absolute;margin-left:-30px;margin-top:-25px;" title="返回软件中心" src="/images/backprev.png" onMouseOver="this.src='/images/backprevclick.png'" onMouseOut="this.src='/images/backprev.png'"></img></div>
+                                                                        </li>
+                                                                        <li style="margin-top:-5px;">
+                                                                            <h3 id="push_content1" >koolproxy是能识别adblock规则的代理软件，可以用于去除网页静广告和视频广告，并且支持https！
+                                                                            </h3>
+                                                                        </li>
+                                                                        <li  style="margin-top:-5px;">
+                                                                            <h3 id="push_content2">
+	                                                                            <i>koolproxy静态规则：</i>
+	                                                                            <span id="rule_date_web"></span>
+	                                                                            &nbsp;&nbsp;&nbsp;&nbsp;
+	                                                                            <i>koolproxy视频规则：</i>
+                                                                            	<span id="video_date_web"></span>
+                                                                            </h3>
+                                                                        </li>
+                                                                    </ul>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
 										<!-- this is the popup area for user rules -->
 										<div id="vpnc_settings"  class="contentM_qis" style="box-shadow: 3px 3px 10px #000;margin-top: -65px;">
 											<div class="user_title">koolproxy自定义规则</div>
@@ -1208,7 +966,7 @@ function hideRules_Block(){
 										</div>
 										<!-- end of the popouparea -->
 										
-										<table style="margin:5px 0px 0px 0px;" width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable" id="routing_table">
+										<table style="margin:-30px 0px 0px 0px;" width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable" id="routing_table">
 											<thead>
 											<tr>
 												<td colspan="2">基础设置</td>
@@ -1236,7 +994,7 @@ function hideRules_Block(){
 
 											<tr id="kp_status">
 												<th>koolproxy运行状态</th>
-												<td><span title="如果发现程序主版本号和插件不一致的，请重装插件！例如插件版本3.2.5.1和程序版本v3.2.5，则为一致"><% dbus_get_def("koolproxy_binary_version", ""); %></span><span id="status"></span></td>
+												<td><span id="status"></span></td>
 											</tr>
 		
 											<tr id="policy_tr">
@@ -1257,41 +1015,7 @@ function hideRules_Block(){
 													<span>&nbsp;&nbsp;除80/443外，额外需要过滤的端口。</span>
 												</td>
 											</tr>
-											<tr id="rule_update_switch">
-												<th>规则自动更新</th>
-												<td>
-													<select name="koolproxy_update" id="koolproxy_update" class="input_option" style="width:auto;margin:0px 0px 0px 2px;" onchange="update_visibility1();">
-														<option value="1" selected>定时</option>
-														<option value="2">间隔</option>
-														<option value="0">关闭</option>
-													</select>
-													<span id="koolproxy_update_hour_span">
-														&nbsp;&nbsp;&nbsp;&nbsp;
-														每天
-														<select id="koolproxy_update_hour" name="koolproxy_update_hour" class="ssconfig input_option" >
-														</select>
-														<select id="koolproxy_update_min" name="koolproxy_update_min" class="ssconfig input_option" >
-														</select>
-														更新
-														&nbsp;&nbsp;&nbsp;&nbsp;
-													</span>
 
-													<span id="koolproxy_update_interval_span">
-														&nbsp;&nbsp;&nbsp;&nbsp;
-														每隔
-														<select id="koolproxy_update_inter_hour" name="koolproxy_update_inter_hour" class="ssconfig input_option" >
-														</select>
-														<select id="koolproxy_update_inter_min" name="koolproxy_update_inter_min" class="ssconfig input_option" >
-														</select>
-														更新
-														&nbsp;&nbsp;&nbsp;&nbsp;
-													</span>
-													
-													<input class="kp_btn" onclick="start_update()" style="cursor:pointer;" type="submit" value="手动更新" />
-													<input class="kp_btn" onclick="open_user_rule()" style="cursor:pointer;" type="submit" value="自定规则" />
-													<input class="kp_btn" id="koolproxy_github" style="cursor:pointer;" type="submit" value="规则反馈" />
-												</td>
-											</tr>
 											<tr id="auto_reboot_switch">
 												<th>插件自动重启</th>
 												<td>
@@ -1332,7 +1056,14 @@ function hideRules_Block(){
 														<option value="3">仅MAC匹配</option>
 													</select>
 												</td>
-											</tr>											
+											</tr>
+											<tr id="rule_update_switch">
+												<th>自定义规则</th>
+												<td>
+													<input class="kp_btn" onclick="open_user_rule()" style="cursor:pointer;" type="submit" value="自定规则" />
+													<input class="kp_btn" id="koolproxy_github" style="cursor:pointer;" type="submit" value="规则反馈" />
+												</td>
+											</tr>								
 											<tr id="cert_download_tr">
 												<th width="35%">证书下载（用于https过滤）</th>
 												<td>
@@ -1348,45 +1079,6 @@ function hideRules_Block(){
 												</td>
 											</tr>
                                     	</table>
-										<table id="RULE_table" style="margin:10px 0px 0px 0px;" width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable" >
-											<thead>
-											<tr>
-												<td colspan="6">规则订阅</td>
-											</tr>
-											</thead>
-											<tr>
-												<th style="width:130px;">规则</th>
-												<th style="width:270px;">规则地址</th>
-												<th style="width:130px;">上次更新时间</th>
-												<th style="width:70px;">是否加载</th>
-												<th style="width:40px;">添加/删除</th>
-											</tr>
-											<tr>
-												<td>
-													<input type="text" maxlength="15" class="input_12_table" id="koolproxy_rule_name" name="koolproxy_rule_name" align="left" onkeypress="return validator.isIPAddr(this, event)" style="float:left;" autocomplete="off" onClick="hideClients_Block();" autocorrect="off" autocapitalize="off">
-													<img id="pull_arrow" height="14px;" src="images/arrow-down.gif" align="right" onclick="pullQoSList(this);" title="选择自带规则">
-													<div id="QoSList_Block" class="QoSList_Block" style="margin-left:2px;margin-top:25px;width:auto;height:auto"></div>
-												</td>
-												<td>
-													<input type="text" class="ssconfig input_ss_table" style="width:300px;font-size:10px;" id="koolproxy_rule_address" name="koolproxy_rule_address" autocorrect="off" autocapitalize="off">
-												</td>
-												<td>
-												</td>
-												<td>
-													<input type="checkbox" id="koolproxy_rule_load" onclick="oncheckclick(this);" />
-													<input type="hidden" id="hd_koolproxy_rule_load" name="koolproxy_rule_load" value="" />
-												</td>
-												<td style="width:66px">
-													<input style="margin-left: 6px;margin: -3px 0px -5px 6px;" type="button" class="add_btn" onclick="addRuleTr()" value="" />
-												</td>
-											</tr>
-										</table>
-										<div id="RULE_note" style="margin-top: 5px;">
-											<div></div>
-											<div><i>1&nbsp;&nbsp;订阅第三方规则（例如adblock, adbyby, chinalist, easylist等）会导致兼容性问题，请确保你订阅的第三方规则支持koolproxy！</i></div>
-											<div><i>2&nbsp;&nbsp;规则下拉菜单里提供了一些基础的koolproxy兼容规则，如果你想自己开发并共享为第三方规则，可以参考此<a href="https://github.com/koolproxy/koolproxy_rules/blob/master/user.txt" target="_blank"><em>规则书写语法</em></a>。</i></div>
-
-										</div>
 										<table id="ACL_table" style="margin:10px 0px 0px 0px;" width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable" >
 											<thead>
 											<tr>

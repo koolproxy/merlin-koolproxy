@@ -15,11 +15,24 @@ write_user_txt(){
 }
 
 start_koolproxy(){
-	kp_version=`koolproxy -h | head -n1 | awk '{print $6}'`
+	rules_date_local=`cat /koolshare/koolproxy/data/rules/koolproxy.txt  | sed -n '3p'|awk '{print $3}'`
+	rules_nu_local=`grep -v "!x" /koolshare/koolproxy/data/rules/koolproxy.txt | wc -l`
+	video_date_local=`cat /koolshare/koolproxy/data/rules/koolproxy.txt  | sed -n '4p'|awk '{print $3}'`
+	echo_date 加载静态规则日期：$rules_date_local
+	echo_date 加载静态规则条数：$rules_nu_local
+	dbus set koolproxy_rule_info="更新日期：$rules_date_local / $rules_nu_local条"
+	echo_date 加载视频规则日期：$video_date_local
+	dbus set koolproxy_video_info="更新日期：$video_date_local"
+
+	kp_version=`cd /koolshare/koolproxy && ./koolproxy -v`
 	dbus set koolproxy_binary_version="koolproxy $kp_version "
 	echo_date 开启koolproxy主进程！
+	[ -f "/koolshare/bin/koolproxy" ] && rm -rf /koolshare/bin/koolproxy
+	[ ! -L "/koolshare/bin/koolproxy" ] && ln -sf /koolshare/koolproxy/koolproxy /koolshare/bin/koolproxy
 	cd /koolshare/koolproxy && koolproxy -d
 }
+
+
 
 stop_koolproxy(){
 	echo_date 关闭koolproxy主进程...
@@ -67,28 +80,6 @@ restart_dnsmasq(){
 	if [ "$dnsmasq_restart" == "1" ];then
 		echo_date 重启dnsmasq进程...
 		service restart_dnsmasq > /dev/null 2>&1
-	fi
-}
-
-write_cron_job(){
-	# start setvice
-	if [ "1" == "$koolproxy_update" ]; then
-		echo_date 开启规则定时更新，每天"$koolproxy_update_hour"时"$koolproxy_update_min"分，检查在线规则更新...
-		cru a koolproxy_update "$koolproxy_update_min $koolproxy_update_hour * * * /bin/sh /koolshare/scripts/koolproxy_rule_update.sh"
-	elif [ "2" == "$koolproxy_update" ]; then
-		echo_date 开启规则定时更新，每隔"$koolproxy_update_inter_hour"时"$koolproxy_update_inter_min"分，检查在线规则更新...
-		cru a koolproxy_update "*/$koolproxy_update_inter_min */$koolproxy_update_inter_hour * * * /bin/sh /koolshare/scripts/koolproxy_rule_update.sh"
-	else
-		echo_date 规则自动更新关闭状态，不启用自动更新...
-	fi
-}
-
-kill_cron_job(){
-	jobexist=`cru l|grep koolproxy_update`
-	# kill crontab job
-	if [ ! -z "$jobexist" ];then
-		echo_date 关闭定时更新...
-		sed -i '/koolproxy_update/d' /var/spool/cron/crontabs/* >/dev/null 2>&1
 	fi
 }
 
@@ -300,53 +291,9 @@ detect_cert(){
 	fi
 }
 
-update_kp_rules(){
-	mkdir -p /tmp/kpd
-	rm -rf rm -rf /tmp/kpd/*
-	rule_nu=`dbus list koolproxy_rule_address_|sort -n -t "=" -k 2|cut -d "=" -f 1 | cut -d "_" -f 4`
-	echo_date ================== 规则更新 =================
-	echo_date
-	rm -rf `ls -L /koolshare/koolproxy/data/*_*.dat`
-	rm -rf `ls -L /koolshare/koolproxy/data/*_*.txt`
-	if [ -n "$rule_nu" ]; then
-		for rule in $rule_nu
-		do
-			rule_name=`dbus get koolproxy_rule_name_$rule`
-			rule_addr=`dbus get koolproxy_rule_address_$rule`
-			rule_load=`dbus get koolproxy_rule_load_$rule`
-			file_name=`dbus get koolproxy_rule_address_$rule|grep -Eo "\w+.dat|\w+.txt"`
-			echo_date ① 检测【$rule_name】$file_name 是否有更新...
-			wget -q --timeout=3 --tries=2 $rule_addr -O /tmp/kpd/$rule"_"$file_name
-			if [ "$?" == "0" ]; then
-				MD5_TMP=`md5sum /tmp/kpd/$rule"_"$file_name| awk '{print $1}'`
-				MD5_ORI=`md5sum /koolshare/koolproxy/rule_store/$rule"_"$file_name| awk '{print $1}'`
-				if [ ! -f /koolshare/koolproxy/rule_store/$rule"_"$file_name ] || [ "$MD5_TMP"x != "$MD5_ORI"x ];then
-					echo_date ② 更新【$rule_name】，$rule_addr
-					mv -f /tmp/kpd/$rule"_"$file_name /koolshare/koolproxy/rule_store/
-				else
-					echo_date ② 本地【$rule_name】$file_name 已经是最新！
-				fi
-			else
-				rm -rf rm -rf /tmp/kpd/*
-				echo_date ① 检测规则错误！请检查你的网络到 $rule_addr 的连通性！
-			fi
-			dbus set koolproxy_rule_date_$rule=`ls -l /koolshare/koolproxy/rule_store/$rule"_"$file_name | awk '{print $6,$7,$8}'`
-			[ "$rule_load" == "1" ] && \
-			echo_date ③ 应用规则文件：【$rule_name】$file_name && \
-			ln -sf /koolshare/koolproxy/rule_store/$rule"_"$file_name /koolshare/koolproxy/data/$rule"_"$file_name
-			echo_date 
-		done
-	else
-		echo_date ！！！没有加载任何规则！退出！！！
-		dbus set koolproxy_enable=0
-		exit
-	fi
-}
-
 case $ACTION in
 start)
 	echo_date ================== koolproxy启用 =================
-	update_kp_rules
 	detect_cert
 	start_koolproxy
 	add_ipset_conf && restart_dnsmasq
@@ -357,7 +304,6 @@ start)
 	dns_takeover
 	creat_start_up
 	write_nat_start
-	write_cron_job
 	write_reboot_job
 	add_ss_event
 	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/user.txt /tmp/user.txt
@@ -373,10 +319,8 @@ restart)
 	remove_nat_start
 	flush_nat
 	stop_koolproxy
-	kill_cron_job
 	# now start
 	echo_date ================== koolproxy启用 =================
-	update_kp_rules
 	detect_cert
 	start_koolproxy
 	add_ipset_conf && restart_dnsmasq
@@ -387,7 +331,6 @@ restart)
 	dns_takeover
 	creat_start_up
 	write_nat_start
-	write_cron_job
 	write_reboot_job
 	add_ss_event
 	echo_date koolproxy启用成功，请等待日志窗口自动关闭，页面会自动刷新...
@@ -401,7 +344,6 @@ stop)
 	remove_nat_start
 	flush_nat
 	stop_koolproxy
-	kill_cron_job
 	del_start_up
 	;;
 *)

@@ -16,35 +16,22 @@ rm -rf /koolshare/koolproxy/data/gen_ca.sh >/dev/null 2>&1
 rm -rf /koolshare/koolproxy/data/openssl.cnf >/dev/null 2>&1
 rm -rf /koolshare/koolproxy/data/version >/dev/null 2>&1
 rm -rf /koolshare/koolproxy/data/serial >/dev/null 2>&1
-rm -rf /koolshare/koolproxy/rule_store
+rm -rf /koolshare/koolproxy/rule_store >/dev/null 2>&1
 
 
 # copy new files
 cd /tmp
 mkdir -p /koolshare/koolproxy
 mkdir -p /koolshare/koolproxy/data
-cp -rf /tmp/koolproxy/bin/* /koolshare/bin/
 cp -rf /tmp/koolproxy/scripts/* /koolshare/scripts/
 cp -rf /tmp/koolproxy/webs/* /koolshare/webs/
 cp -rf /tmp/koolproxy/res/* /koolshare/res/
-cp -rf /tmp/koolproxy/koolproxy/kp_config.sh /koolshare/koolproxy/
-cp -rf /tmp/koolproxy/koolproxy/rule_store /koolshare/koolproxy/
-cp -rf /tmp/koolproxy/koolproxy/data/koolproxy_ipset.conf /koolshare/koolproxy/data/
-cp -rf /tmp/koolproxy/koolproxy/data/gen_ca.sh /koolshare/koolproxy/data/
-cp -rf /tmp/koolproxy/koolproxy/data/openssl.cnf /koolshare/koolproxy/data/
-cp -rf /tmp/koolproxy/koolproxy/data/version /koolshare/koolproxy/data/
-if [ ! -f /koolshare/koolproxy/data/user.txt ];then
+if [ ! -f /koolshare/koolproxy/data/rules/user.txt ];then
 	cp -rf /tmp/koolproxy/koolproxy /koolshare/
 else
-	mv /koolshare/koolproxy/data/user.txt /tmp/user.txt.tmp
+	mv /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt.tmp
 	cp -rf /tmp/koolproxy/koolproxy /koolshare/
-	mv /tmp/user.txt.tmp /koolshare/koolproxy/data/user.txt
-fi
-if [ ! -d /koolshare/koolproxy/data/certs ];then
-	cp -rf /tmp/koolproxy/koolproxy/data/certs /koolshare/koolproxy/data/
-fi
-if [ ! -d /koolshare/koolproxy/data/certs ];then
-	cp -rf /tmp/koolproxy/koolproxy/data/private /koolshare/koolproxy/data/
+	mv /tmp/user.txt.tmp /koolshare/koolproxy/data/rules/user.txt
 fi
 
 cp -f /tmp/koolproxy/uninstall.sh /koolshare/scripts/uninstall_koolproxy.sh
@@ -52,23 +39,18 @@ cp -f /tmp/koolproxy/uninstall.sh /koolshare/scripts/uninstall_koolproxy.sh
 
 cd /
 
-chmod 755 /koolshare/bin/koolproxy
+chmod 755 /koolshare/koolproxy/koolproxy
 chmod 755 /koolshare/koolproxy/*
 chmod 755 /koolshare/koolproxy/data/*
 chmod 755 /koolshare/scripts/*
+[ ! -L "/koolshare/bin/koolproxy" ] && ln -sf /koolshare/koolproxy/koolproxy /koolshare/bin/koolproxy
 
 rm -rf /tmp/koolproxy* >/dev/null 2>&1
 
 [ -z "$koolproxy_policy" ] && dbus set koolproxy_policy=1
 [ -z "$koolproxy_acl_default_mode" ] && dbus set koolproxy_acl_default_mode=1
-[ -z `dbus list koolproxy_rule_name_` ] && dbus set koolproxy_rule_name_1="视频规则(new)" && dbus set koolproxy_rule_name_2="静态规则(new)"
-[ -z `dbus list koolproxy_rule_address_` ] && dbus set koolproxy_rule_address_1="http://koolshare.b0.upaiyun.com/rules/1.dat" && dbus set koolproxy_rule_address_2="http://koolshare.b0.upaiyun.com/rules/koolproxy.txt" && dbus set koolproxy_rule_address_3="http://koolshare.b0.upaiyun.com/rules/add_rules.txt"
-[ -z `dbus list koolproxy_rule_load_` ] && dbus set koolproxy_rule_load_1="1" && dbus set koolproxy_rule_load_2="1"
-[ -z `dbus list koolproxy_rule_date_` ] && dbus set koolproxy_rule_date_1="Mar 27 10:02" && dbus set koolproxy_rule_date_2="Mar 27 10:02"
 
-dbus set koolproxy_rule_info=`cat /koolshare/koolproxy/data/version | awk 'NR==2{print}'`
-dbus set koolproxy_video_info=`cat /koolshare/koolproxy/data/version | awk 'NR==4{print}'`
 dbus set softcenter_module_koolproxy_install=1
-dbus set softcenter_module_koolproxy_version=3.3.6.1
-dbus set koolproxy_version=3.3.6.1
+dbus set softcenter_module_koolproxy_version=3.3.7
+dbus set koolproxy_version=3.3.7
 
