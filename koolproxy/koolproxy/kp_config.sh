@@ -10,7 +10,7 @@ flag1=1
 write_user_txt(){
 	if [ -n "$koolproxy_user_rule" ];then
 		echo $koolproxy_user_rule | base64_decode > /koolshare/koolproxy/data/rules/user.txt
-		dbus remove koolproxy_user_rule
+		#dbus remove koolproxy_user_rule
 	fi
 }
 
@@ -18,10 +18,9 @@ start_koolproxy(){
 	rules_date_local=`cat /koolshare/koolproxy/data/rules/koolproxy.txt  | sed -n '3p'|awk '{print $3}'`
 	rules_nu_local=`grep -v "!x" /koolshare/koolproxy/data/rules/koolproxy.txt | wc -l`
 	video_date_local=`cat /koolshare/koolproxy/data/rules/koolproxy.txt  | sed -n '4p'|awk '{print $3}'`
-	echo_date 加载静态规则日期：$rules_date_local
-	echo_date 加载静态规则条数：$rules_nu_local
+	echo_date 加载静态规则日期：$rules_date_local,条数：$rules_nu_local
 	dbus set koolproxy_rule_info="更新日期：$rules_date_local / $rules_nu_local条"
-	echo_date 加载视频规则日期：$video_date_local
+	[ "$koolproxy_policy" != "3" ] && echo_date 加载视频规则日期：$video_date_local
 	dbus set koolproxy_video_info="更新日期：$video_date_local"
 
 	kp_version=`cd /koolshare/koolproxy && ./koolproxy -v`
@@ -29,7 +28,8 @@ start_koolproxy(){
 	echo_date 开启koolproxy主进程！
 	[ -f "/koolshare/bin/koolproxy" ] && rm -rf /koolshare/bin/koolproxy
 	[ ! -L "/koolshare/bin/koolproxy" ] && ln -sf /koolshare/koolproxy/koolproxy /koolshare/bin/koolproxy
-	cd /koolshare/koolproxy && koolproxy -d
+	[ "$koolproxy_policy" == "3" ] && EXT_ARG="-e" || EXT_ARG=""
+	cd /koolshare/koolproxy && koolproxy $EXT_ARG -d
 }
 
 

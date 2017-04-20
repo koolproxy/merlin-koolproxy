@@ -6,7 +6,7 @@ alias echo_date='echo $(date +%Y年%m月%d日\ %X):'
 write_user_txt(){
 	if [ -n "$koolproxy_user_rule" ];then
 		user_nu=`echo $koolproxy_user_rule | base64_decode |grep -cv "!"`
-		echo $koolproxy_user_rule | base64_decode > /koolshare/koolproxy/data/user.txt
+		echo $koolproxy_user_rule | base64_decode > /koolshare/koolproxy/data/rules/user.txt
 		echo_date 成功添加了"$user_nu"条自定义规则！ >> /tmp/koolproxy_run.log
 		echo_date 自动为你重启koolproxy插件！ >> /tmp/koolproxy_run.log
 		dbus remove koolproxy_user_rule

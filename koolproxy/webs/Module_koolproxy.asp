@@ -355,6 +355,7 @@ function reload_Soft_Center(){
 function update_visibility1(){
 	showhide("koolproxy_policy_read1", (document.form.koolproxy_policy.value == 1));
 	showhide("koolproxy_policy_read2", (document.form.koolproxy_policy.value == 2));
+	showhide("koolproxy_policy_read3", (document.form.koolproxy_policy.value == 3));
 	showhide("koolproxy_reboot_hour_span", (document.form.koolproxy_reboot.value == 1));
 	showhide("koolproxy_reboot_interval_span", (document.form.koolproxy_reboot.value == 2));
 }
@@ -1003,9 +1004,11 @@ function close_user_rule(){
 													<select name="koolproxy_policy" id="koolproxy_policy" class="input_option" onchange="update_visibility1();" style="width:auto;margin:0px 0px 0px 2px;">
 														<option value="1" selected>全局模式</option>
 														<option value="2">ipset模式</option>
+														<option value="3">视频模式</option>
 													</select>
 														<span id="koolproxy_policy_read1" style="display: none;">&nbsp;&nbsp;全局模式所有80/443端口的流量都会走koolproxy过，过滤效果最好。</span>
 														<span id="koolproxy_policy_read2" style="display: none;">&nbsp;&nbsp;只有黑名单内的域名走koolproxy(基于ipset)，效果不及全局模式。</span>
+														<span id="koolproxy_policy_read3" style="display: none;">&nbsp;&nbsp;视频模式下只加载视频规则，不加载静态规则。</span>
 												</td>
 											</tr>
 											<tr id="ports_tr">
