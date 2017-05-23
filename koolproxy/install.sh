@@ -17,7 +17,7 @@ rm -rf /koolshare/koolproxy/data/openssl.cnf >/dev/null 2>&1
 rm -rf /koolshare/koolproxy/data/version >/dev/null 2>&1
 rm -rf /koolshare/koolproxy/data/serial >/dev/null 2>&1
 rm -rf /koolshare/koolproxy/rule_store >/dev/null 2>&1
-
+rm -rf /koolshare/koolproxy/data/rules/1.dat >/dev/null 2>&1
 
 # copy new files
 cd /tmp
