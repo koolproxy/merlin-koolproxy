@@ -1077,7 +1077,8 @@ function close_user_rule(){
 											<tr id="klloproxy_com">
 												<th width="35%">koolproxy交流</th>
 												<td>
-													<a type="button" class="kp_btn" target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d6c8af54e6563126004324b5d8c58aa972e21e04ec6f007679458921587db9b0">加入QQ群</a>
+													<a type="button" class="kp_btn" target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=d6c8af54e6563126004324b5d8c58aa972e21e04ec6f007679458921587db9b0">加入QQ群①</a>
+													<a type="button" class="kp_btn" target="_blank" href="https://jq.qq.com/?_wv=1027&k=49tpIKb">加入QQ群②</a>
 													<a type="button" class="kp_btn" target="_blank" href="https://t.me/joinchat/AAAAAD-tO7GPvfOU131_vg">加入电报群</a>
 												</td>
 											</tr>
