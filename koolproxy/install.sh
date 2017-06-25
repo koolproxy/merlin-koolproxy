@@ -2,7 +2,6 @@
 eval `dbus export koolproxy`
 
 # stop first
-dbus set koolproxy_enable=0
 [ "$koolproxy_enable" == "1" ] && sh /koolshare/koolproxy/kp_config.sh stop
 # remove old files
 rm -rf /koolshare/bin/koolproxy >/dev/null 2>&1
