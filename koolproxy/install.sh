@@ -53,7 +53,7 @@ dbus set softcenter_module_koolproxy_install=1
 
 [ "$koolproxy_enable" == "1" ] && sh /koolshare/koolproxy/kp_config.sh restart
 
-
 dbus set softcenter_module_koolproxy_version=3.3.7
 dbus set koolproxy_version=3.3.7
+
 
