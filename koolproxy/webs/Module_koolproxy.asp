@@ -305,7 +305,6 @@ function buildswitch(){
 		if(document.getElementById('switch').checked){
 			document.form.koolproxy_enable.value = 1;
 			document.getElementById("policy_tr").style.display = "";
-			document.getElementById("ports_tr").style.display = "";
 			document.getElementById("kp_status").style.display = "";
 			document.getElementById("auto_reboot_switch").style.display = "";
 			document.getElementById("rule_update_switch").style.display = "";
@@ -317,7 +316,6 @@ function buildswitch(){
 		}else{
 			document.form.koolproxy_enable.value = 0;
 			document.getElementById("policy_tr").style.display = "none";
-			document.getElementById("ports_tr").style.display = "none";
 			document.getElementById("kp_status").style.display = "none";
 			document.getElementById("auto_reboot_switch").style.display = "none";
 			document.getElementById("rule_update_switch").style.display = "none";
@@ -331,14 +329,13 @@ function buildswitch(){
 }
 
 function onSubmitCtrl(o, s) {
-
-		document.form.koolproxy_basic_action.value = 1;
-		document.form.action_mode.value = s;
-		document.form.SystemCmd.value = "koolproxy_config.sh";
-		document.form.submit();
-		showKPLoadingBar();
-    	noChange = 0;
-    	setTimeout("checkCmdRet();", 500);
+	document.form.koolproxy_basic_action.value = 1;
+	document.form.action_mode.value = s;
+	document.form.SystemCmd.value = "koolproxy_config.sh";
+	document.form.submit();
+	showKPLoadingBar();
+    noChange = 0;
+    setTimeout("checkCmdRet();", 500);
 }
 
 function conf2obj(){
@@ -363,7 +360,6 @@ function update_visibility1(){
 function update_visibility(){
 	if(db_koolproxy["koolproxy_enable"] == "1"){
 		document.getElementById("policy_tr").style.display = "";
-		document.getElementById("ports_tr").style.display = "";
 		document.getElementById("kp_status").style.display = "";
 		document.getElementById("auto_reboot_switch").style.display = "";
 		document.getElementById("rule_update_switch").style.display = "";
@@ -374,7 +370,6 @@ function update_visibility(){
 		document.getElementById("ACL_note").style.display = "";
 	}else{
 		document.getElementById("policy_tr").style.display = "none";
-		document.getElementById("ports_tr").style.display = "none";
 		document.getElementById("kp_status").style.display = "none";
 		document.getElementById("auto_reboot_switch").style.display = "none";
 		document.getElementById("rule_update_switch").style.display = "none";
@@ -874,14 +869,14 @@ function close_user_rule(){
 	<table cellpadding="5" cellspacing="0" id="loadingBarBlock" class="loadingBarBlock"  align="center">
 		<tr>
 			<td height="100">
-			<div id="loading_block3" style="margin:10px auto;margin-left:10px;width:85%; font-size:12pt;"></div>
-			<div id="loading_block2" style="margin:10px auto;width:95%;"></div>
-			<div id="log_content2" style="margin-left:15px;margin-right:15px;margin-top:10px;overflow:hidden">
-				<textarea cols="63" rows="21" wrap="on" readonly="readonly" id="log_content3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="border:1px solid #000;width:99%; font-family:'Courier New', Courier, mono; font-size:11px;background:#000;color:#FFFFFF;"></textarea>
-			</div>
-			<div id="ok_button" class="apply_gen" style="background: #000;display: none;">
-				<input id="ok_button1" class="button_gen" type="button" onclick="hideKPLoadingBar()" value="确定">
-			</div>
+				<div id="loading_block3" style="margin:10px auto;margin-left:10px;width:85%; font-size:12pt;"></div>
+				<div id="loading_block2" style="margin:10px auto;width:95%;"></div>
+				<div id="log_content2" style="margin-left:15px;margin-right:15px;margin-top:10px;overflow:hidden">
+					<textarea cols="63" rows="21" wrap="on" readonly="readonly" id="log_content3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="border:1px solid #000;width:99%; font-family:'Courier New', Courier, mono; font-size:11px;background:#000;color:#FFFFFF;"></textarea>
+				</div>
+				<div id="ok_button" class="apply_gen" style="background: #000;display: none;">
+					<input id="ok_button1" class="button_gen" type="button" onclick="hideKPLoadingBar()" value="确定">
+				</div>
 			</td>
 		</tr>
 	</table>
@@ -1011,14 +1006,6 @@ function close_user_rule(){
 														<span id="koolproxy_policy_read3" style="display: none;">&nbsp;&nbsp;视频模式下只加载视频规则，不加载静态规则。</span>
 												</td>
 											</tr>
-											<tr id="ports_tr">
-												<th>额外过滤端口</th>
-												<td>
-													<input type="text" cols="1" class="input_ss_table" style="width:164px;" autocorrect="off" autocapitalize="off" id="koolproxy_ext_ports" name="koolproxy_ext_ports" value="82,8080" />
-													<span>&nbsp;&nbsp;除80/443外，额外需要过滤的端口。</span>
-												</td>
-											</tr>
-
 											<tr id="auto_reboot_switch">
 												<th>插件自动重启</th>
 												<td>

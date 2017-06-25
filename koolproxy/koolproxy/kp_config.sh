@@ -246,9 +246,9 @@ load_nat(){
 	iptables -t nat -A KOOLPROXY -m set --match-set white_kp_list dst -j RETURN
 	#  生成对应CHAIN
 	iptables -t nat -N KOOLPROXY_HTTP
-	iptables -t nat -A KOOLPROXY_HTTP -p tcp -m multiport --dport 80,$koolproxy_ext_ports -j REDIRECT --to-ports 3000
+	iptables -t nat -A KOOLPROXY_HTTP -p tcp -m multiport --dport 80 -j REDIRECT --to-ports 3000
 	iptables -t nat -N KOOLPROXY_HTTPS
-	iptables -t nat -A KOOLPROXY_HTTPS -p tcp -m multiport --dport 80,443,$koolproxy_ext_ports -j REDIRECT --to-ports 3000
+	iptables -t nat -A KOOLPROXY_HTTPS -p tcp -m multiport --dport 80,443 -j REDIRECT --to-ports 3000
 	# 局域网控制
 	lan_acess_control
 	# 剩余流量转发到缺省规则定义的链中
@@ -287,7 +287,10 @@ dns_takeover(){
 detect_cert(){
 	if [ ! -f /koolshare/koolproxy/data/private/ca.key.pem ]; then
 		echo_date 检测到首次运行，开始生成koolproxy证书，用于https过滤！
+		echo_date 生成证书需要较长时间，请一定耐心等待！！！
 		cd /koolshare/koolproxy/data && sh gen_ca.sh
+		#cd /koolshare/koolproxy && ./koolproxy --cert >/dev/null 2>&1
+		echo_date 证书生成完毕！！！
 	fi
 }
 
