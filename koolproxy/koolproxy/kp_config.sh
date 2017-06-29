@@ -29,7 +29,7 @@ start_koolproxy(){
 	[ -f "/koolshare/bin/koolproxy" ] && rm -rf /koolshare/bin/koolproxy
 	[ ! -L "/koolshare/bin/koolproxy" ] && ln -sf /koolshare/koolproxy/koolproxy /koolshare/bin/koolproxy
 	[ "$koolproxy_policy" == "3" ] && EXT_ARG="-e" || EXT_ARG=""
-	cd /koolshare/koolproxy && koolproxy $EXT_ARG -d
+	cd /koolshare/koolproxy && koolproxy $EXT_ARG --mark -d
 }
 
 
@@ -254,10 +254,12 @@ load_nat(){
 	# 剩余流量转发到缺省规则定义的链中
 	iptables -t nat -A KOOLPROXY -p tcp -j $(get_action_chain $koolproxy_acl_default_mode)
 	# 重定所有流量到 KOOLPROXY
+	SS_NU=`iptables -nvL PREROUTING -t nat |sed 1,2d | sed -n '/SHADOWSOCKS/='`
+	[ "$SS_NU" == "" ] && SS_NU=1
 	# 全局模式和视频模式
-	[ "$koolproxy_policy" == "1" ] || [ "$koolproxy_policy" == "3" ] && iptables -t nat -I PREROUTING 2 -p tcp -j KOOLPROXY
+	[ "$koolproxy_policy" == "1" ] || [ "$koolproxy_policy" == "3" ] && iptables -t nat -I PREROUTING $SS_NU -p tcp -j KOOLPROXY
 	# ipset 黑名单模式
-	[ "$koolproxy_policy" == "2" ] && iptables -t nat -I PREROUTING 2 -p tcp -m set --match-set black_koolproxy dst -j KOOLPROXY
+	[ "$koolproxy_policy" == "2" ] && iptables -t nat -I PREROUTING $SS_NU -p tcp -m set --match-set black_koolproxy dst -j KOOLPROXY
 }
 
 dns_takeover(){
