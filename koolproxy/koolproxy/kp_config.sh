@@ -290,12 +290,13 @@ case $ACTION in
 start)
 	echo_date ================== koolproxy启用 =================
 	detect_cert
+	load_module
 	start_koolproxy
 	add_ipset_conf && restart_dnsmasq
-	load_module
 	if [ ! -f "/tmp/kp_nat_locker" ] && [ -z "$KP_CHAIN" ];then
 		touch /tmp/kp_nat_locker
 		flush_nat
+		sleep 1
 		creat_ipset
 		add_white_black_ip
 		load_nat
@@ -343,10 +344,15 @@ stop)
 	stop_koolproxy
 	del_start_up
 	;;
+stop_nat)
+	flush_nat
+	;;
 *)
 	if [ ! -f "/tmp/kp_nat_locker" ] && [ -z "$KP_CHAIN" ];then
 		touch /tmp/kp_nat_locker
+		load_module
 		flush_nat
+		sleep 1
 		creat_ipset
 		add_white_black_ip
 		load_nat
