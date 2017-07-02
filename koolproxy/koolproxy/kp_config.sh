@@ -5,7 +5,6 @@ eval `dbus export koolproxy`
 # 引用环境变量等
 source /koolshare/scripts/base.sh
 alias echo_date='echo $(date +%Y年%m月%d日\ %X):'
-flag1=1
 
 write_user_txt(){
 	if [ -n "$koolproxy_user_rule" ];then
@@ -81,18 +80,6 @@ restart_dnsmasq(){
 		echo_date 重启dnsmasq进程...
 		service restart_dnsmasq > /dev/null 2>&1
 	fi
-}
-
-add_ss_event(){
-	start=`dbus list __event__onssstart_|grep koolproxy`
-	if [ -z "$start" ];then
-	echo_date 添加ss事件触发：当ss启用或者重启，重新加载koolproxy的nat规则.
-	dbus event onssstart_koolproxy /koolshare/koolproxy/koolproxy.sh
-	fi
-}
-
-remove_ss_event(){
-	dbus remove __event__onssstart_koolproxy
 }
 
 write_reboot_job(){
@@ -231,7 +218,7 @@ load_nat(){
 	    i=$(($i-1))
 	    if [ "$i" -lt 1 ];then
 	        echo_date "Could not load nat rules!"
-	        sh /koolshare/ss/stop.sh
+	        sh /koolshare/koolproxy/kp_config.sh stop
 	        exit
 	    fi
 	    sleep 1
@@ -296,6 +283,9 @@ detect_cert(){
 	fi
 }
 
+KP_CHAIN=`iptables -nvL -t nat | grep KOOLPROXY`
+
+
 case $ACTION in
 start)
 	echo_date ================== koolproxy启用 =================
@@ -303,14 +293,18 @@ start)
 	start_koolproxy
 	add_ipset_conf && restart_dnsmasq
 	load_module
-	creat_ipset
-	add_white_black_ip
-	load_nat
-	dns_takeover
+	if [ ! -f "/tmp/kp_nat_locker" ] && [ -z "$KP_CHAIN" ];then
+		touch /tmp/kp_nat_locker
+		flush_nat
+		creat_ipset
+		add_white_black_ip
+		load_nat
+		dns_takeover
+		rm -rf /tmp/kp_nat_locker
+	fi
 	creat_start_up
 	write_nat_start
 	write_reboot_job
-	add_ss_event
 	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
 	echo_date =================================================
 	;;
@@ -318,7 +312,6 @@ restart)
 	# now stop
 	echo_date ================== 关闭 =================
 	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
-	remove_ss_event
 	remove_reboot_job
 	remove_ipset_conf
 	remove_nat_start
@@ -337,13 +330,12 @@ restart)
 	creat_start_up
 	write_nat_start
 	write_reboot_job
-	add_ss_event
 	echo_date koolproxy启用成功，请等待日志窗口自动关闭，页面会自动刷新...
+	rm -rf touch /tmp/koolproxy_lock
 	echo_date =================================================
 	;;
 stop)
 	rm -rf /tmp/user.txt
-	remove_ss_event
 	remove_reboot_job
 	remove_ipset_conf && restart_dnsmasq
 	remove_nat_start
@@ -352,10 +344,14 @@ stop)
 	del_start_up
 	;;
 *)
-	flush_nat
-	creat_ipset
-	add_white_black_ip
-	load_nat
-	dns_takeover
+	if [ ! -f "/tmp/kp_nat_locker" ] && [ -z "$KP_CHAIN" ];then
+		touch /tmp/kp_nat_locker
+		flush_nat
+		creat_ipset
+		add_white_black_ip
+		load_nat
+		dns_takeover
+		rm -rf /tmp/kp_nat_locker
+	fi
 	;;
 esac

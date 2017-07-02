@@ -17,6 +17,11 @@ rm -rf /koolshare/koolproxy/data/serial >/dev/null 2>&1
 rm -rf /koolshare/koolproxy/rule_store >/dev/null 2>&1
 rm -rf /koolshare/koolproxy/data/rules/1.dat >/dev/null 2>&1
 
+# remove old ss event
+cd /tmp
+dbus list __|grep koolproxy |cut -d "=" -f1 | sed 's/-A/iptables -t nat -D/g'|sed 's/^/dbus remove /g' > remove.sh && chmod 777 remove.sh && ./remove.sh
+
+
 # copy new files
 cd /tmp
 mkdir -p /koolshare/koolproxy
