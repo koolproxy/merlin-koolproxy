@@ -82,6 +82,18 @@ restart_dnsmasq(){
 	fi
 }
 
+add_ss_event(){
+	start=`dbus list __event__onssstart_|grep koolproxy`
+	if [ -z "$start" ];then
+	echo_date 添加ss事件触发：当ss启用或者重启，重新加载koolproxy的nat规则.
+	dbus event onssstart_koolproxy /koolshare/koolproxy/kp_config.sh
+	fi
+}
+
+remove_ss_event(){
+	dbus remove __event__onssstart_koolproxy
+}
+
 write_reboot_job(){
 	# start setvice
 	if [ "1" == "$koolproxy_reboot" ]; then
@@ -283,29 +295,21 @@ detect_cert(){
 	fi
 }
 
-KP_CHAIN=`iptables -nvL -t nat | grep KOOLPROXY`
-
-
 case $ACTION in
 start)
 	echo_date ================== koolproxy启用 =================
 	detect_cert
-	load_module
+	#load_module
 	start_koolproxy
 	add_ipset_conf && restart_dnsmasq
-	if [ ! -f "/tmp/kp_nat_locker" ] && [ -z "$KP_CHAIN" ];then
-		touch /tmp/kp_nat_locker
-		flush_nat
-		sleep 1
-		creat_ipset
-		add_white_black_ip
-		load_nat
-		dns_takeover
-		rm -rf /tmp/kp_nat_locker
-	fi
+	creat_ipset
+	add_white_black_ip
+	load_nat
+	dns_takeover
 	creat_start_up
 	write_nat_start
 	write_reboot_job
+	add_ss_event
 	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
 	echo_date =================================================
 	;;
@@ -313,6 +317,7 @@ restart)
 	# now stop
 	echo_date ================== 关闭 =================
 	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
+	remove_ss_event
 	remove_reboot_job
 	remove_ipset_conf
 	remove_nat_start
@@ -331,12 +336,13 @@ restart)
 	creat_start_up
 	write_nat_start
 	write_reboot_job
+	add_ss_event
 	echo_date koolproxy启用成功，请等待日志窗口自动关闭，页面会自动刷新...
-	rm -rf touch /tmp/koolproxy_lock
 	echo_date =================================================
 	;;
 stop)
 	rm -rf /tmp/user.txt
+	remove_ss_event
 	remove_reboot_job
 	remove_ipset_conf && restart_dnsmasq
 	remove_nat_start
@@ -348,16 +354,16 @@ stop_nat)
 	flush_nat
 	;;
 *)
-	if [ ! -f "/tmp/kp_nat_locker" ] && [ -z "$KP_CHAIN" ];then
-		touch /tmp/kp_nat_locker
+	# 如果是开机启动，则不加载
+	WAN_ACTION=`ps|grep /jffs/scripts/wan-start|grep -v grep`
+	[ -n "$WAN_ACTION" ] && exit
+	if [ "$koolproxy_enable" == "1" ] ;then
 		load_module
 		flush_nat
-		sleep 1
 		creat_ipset
 		add_white_black_ip
 		load_nat
 		dns_takeover
-		rm -rf /tmp/kp_nat_locker
 	fi
 	;;
 esac
