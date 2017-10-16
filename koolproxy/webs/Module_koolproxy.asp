@@ -681,7 +681,7 @@ function refresh_acl_html() {
 	code = code + '</tr>';
 	return code;
 }
-function setClientIP(ip , name, mac){
+function setClientIP(ip, name, mac){
 	document.form.koolproxy_acl_ip.value = ip;
 	document.form.koolproxy_acl_name.value = name;
 	document.form.koolproxy_acl_mac.value = mac;
@@ -707,7 +707,7 @@ function hideClients_Block(){
 }
 
 function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode, _containerID, _pullArrowID, _clientState) {
-	document.body.onclick = function() {control_dropdown_client_block(_containerID, _pullArrowID);}
+	document.body.addEventListener("click", function(_evt) {control_dropdown_client_block(_containerID, _pullArrowID, _evt);})
 	if(clientList.length == 0){
 		setTimeout(function() {
 			genClientList();
@@ -717,9 +717,9 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 	}
 
 	var htmlCode = "";
-	htmlCode += "<div id='clientlist_online'></div>";
-	htmlCode += "<div id='clientlist_dropdown_expand' class='clientlist_dropdown_expand' onclick='expand_hide_Client(\"clientlist_dropdown_expand\", \"clientlist_offline\");' onmouseover='over_var=1;' onmouseout='over_var=0;'>Show Offline Client List</div>";
-	htmlCode += "<div id='clientlist_offline'></div>";
+	htmlCode += "<div id='" + _containerID + "_clientlist_online'></div>";
+	htmlCode += "<div id='" + _containerID + "_clientlist_dropdown_expand' class='clientlist_dropdown_expand' onclick='expand_hide_Client(\"" + _containerID + "_clientlist_dropdown_expand\", \"" + _containerID + "_clientlist_offline\");' onmouseover='over_var=1;' onmouseout='over_var=0;'>Show Offline Client List</div>";
+	htmlCode += "<div id='" + _containerID + "_clientlist_offline'></div>";
 	document.getElementById(_containerID).innerHTML = htmlCode;
 
 	var param = _callBackFunParam.split(">");
@@ -737,7 +737,10 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 				}
 				break;
 			case "name" :
-				attribute_value = (clientObj.nickName == "") ? clientObj.name : clientObj.nickName;
+				attribute_value = (clientObj.nickName == "") ? clientObj.name.replace(/'/g, "\\'") : clientObj.nickName.replace(/'/g, "\\'");
+				break;
+			default :
+				attribute_value = _attribute;
 				break;
 		}
 		return attribute_value;
@@ -770,6 +773,16 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 		code += '\''
 		code += clientList[i];
 		code += '\');">';
+		for(var j = 0; j < param.length; j += 1) {
+			if(j == 0) {
+				code += "【" + getClientValue(param[j], clientObj) + "】 ";
+			}
+			else {
+				code += '\', \'';
+				code += "【" + getClientValue(param[j], clientObj) + "】 ";
+			}
+		}
+		
 		if(clientName.length > 32) {
 			code += clientName.substring(0, 30) + "..";
 		}
@@ -777,7 +790,7 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 			code += clientName;
 		}
 		if(_state == "offline")
-			code += '<strong title="Remove this client" style="float:right;margin-right:5px;cursor:pointer;" onclick="removeClient(\'' + clientObj.mac + '\', \'clientlist_dropdown_expand\', \'clientlist_offline\')">×</strong>';
+			code += '<strong title="Remove this client" style="float:right;margin-right:5px;cursor:pointer;" onclick="removeClient(\'' + clientObj.mac + '\', \'' + _containerID  + '_clientlist_dropdown_expand\', \'' + _containerID  + '_clientlist_offline\')">×</strong>';
 		code += '</div><!--[if lte IE 6.5]><iframe class="hackiframe2"></iframe><![endif]--></a>';
 		return code;
 	};
@@ -793,10 +806,10 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 					continue;
 				}
 				if(clientObj.isOnline) {
-					document.getElementById("clientlist_online").innerHTML += genClientItem("online");
+					document.getElementById("" + _containerID + "_clientlist_online").innerHTML += genClientItem("online");
 				}
 				else if(clientObj.from == "nmpClient") {
-					document.getElementById("clientlist_offline").innerHTML += genClientItem("offline");
+					document.getElementById("" + _containerID + "_clientlist_offline").innerHTML += genClientItem("offline");
 				}
 				break;
 			case "online" :
@@ -807,7 +820,7 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 					continue;
 				}
 				if(clientObj.isOnline) {
-					document.getElementById("clientlist_online").innerHTML += genClientItem("online");
+					document.getElementById("" + _containerID + "_clientlist_online").innerHTML += genClientItem("online");
 				}
 				break;
 			case "offline" :
@@ -818,31 +831,31 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 					continue;
 				}
 				if(clientObj.from == "nmpClient") {
-					document.getElementById("clientlist_offline").innerHTML += genClientItem("offline");
+					document.getElementById("" + _containerID + "_clientlist_offline").innerHTML += genClientItem("offline");
 				}
 				break;
 		}		
 	}
 	
-	if(document.getElementById("clientlist_offline").childNodes.length == "0") {
-		if(document.getElementById("clientlist_dropdown_expand") != null) {
-			removeElement(document.getElementById("clientlist_dropdown_expand"));
+	if(document.getElementById("" + _containerID + "_clientlist_offline").childNodes.length == "0") {
+		if(document.getElementById("" + _containerID + "_clientlist_dropdown_expand") != null) {
+			removeElement(document.getElementById("" + _containerID + "_clientlist_dropdown_expand"));
 		}
-		if(document.getElementById("clientlist_offline") != null) {
-			removeElement(document.getElementById("clientlist_offline"));
+		if(document.getElementById("" + _containerID + "_clientlist_offline") != null) {
+			removeElement(document.getElementById("" + _containerID + "_clientlist_offline"));
 		}
 	}
 	else {
-		if(document.getElementById("clientlist_dropdown_expand").innerText == "Show Offline Client List") {
-			document.getElementById("clientlist_offline").style.display = "none";
+		if(document.getElementById("" + _containerID + "_clientlist_dropdown_expand").innerText == "Show Offline Client List") {
+			document.getElementById("" + _containerID + "_clientlist_offline").style.display = "none";
 		}
 		else {
-			document.getElementById("clientlist_offline").style.display = "";
+			document.getElementById("" + _containerID + "_clientlist_offline").style.display = "";
 		}
 	}
-	if(document.getElementById("clientlist_online").childNodes.length == "0") {
-		if(document.getElementById("clientlist_online") != null) {
-			removeElement(document.getElementById("clientlist_online"));
+	if(document.getElementById("" + _containerID + "_clientlist_online").childNodes.length == "0") {
+		if(document.getElementById("" + _containerID + "_clientlist_online") != null) {
+			removeElement(document.getElementById("" + _containerID + "_clientlist_online"));
 		}
 	}
 
@@ -850,12 +863,6 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 		document.getElementById(_pullArrowID).style.display = "none";
 	else
 		document.getElementById(_pullArrowID).style.display = "";
-}
-function open_user_rule(){
-	$j("#vpnc_settings").fadeIn(200);
-}
-function close_user_rule(){
-	$j("#vpnc_settings").fadeOut(200);
 }
 
 
@@ -1069,7 +1076,7 @@ function close_user_rule(){
 													<a type="button" class="kp_btn" target="_blank" href="https://t.me/joinchat/AAAAAD-tO7GPvfOU131_vg">加入电报群</a>
 												</td>
 											</tr>
-                                    	</table>
+										</table>
 										<table id="ACL_table" style="margin:10px 0px 0px 0px;" width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable" >
 											<thead>
 											<tr>
@@ -1087,7 +1094,7 @@ function close_user_rule(){
 												<td>
 													<input type="text" maxlength="15" class="input_15_table" id="koolproxy_acl_ip" name="koolproxy_acl_ip" align="left" onkeypress="return validator.isIPAddr(this, event)" style="float:left;" autocomplete="off" onClick="hideClients_Block();" autocorrect="off" autocapitalize="off">
 													<img id="pull_arrow" height="14px;" src="images/arrow-down.gif" align="right" onclick="pullLANIPList(this);" title="<#select_IP#>">
-													<div id="ClientList_Block" class="clientlist_dropdown" style="margin-left:2px;margin-top:25px;"></div>
+													<div id="ClientList_Block" class="clientlist_dropdown" style="margin-left:2px;margin-top:25px;width:auto"></div>
 												</td>
 												<td>
 													<input type="text" id="koolproxy_acl_mac" name="koolproxy_acl_mac" class="ssconfig input_ss_table" maxlength="50" style="width:140px;" placeholder="" />
