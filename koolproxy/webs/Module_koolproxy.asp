@@ -864,9 +864,12 @@ function showDropdownClientList(_callBackFun, _callBackFunParam, _interfaceMode,
 	else
 		document.getElementById(_pullArrowID).style.display = "";
 }
-
-
-
+function open_user_rule(){
+	$j("#vpnc_settings").fadeIn(200);
+}
+function close_user_rule(){
+	$j("#vpnc_settings").fadeOut(200);
+}
 </script>
 </head>
 <body onload="init();">
