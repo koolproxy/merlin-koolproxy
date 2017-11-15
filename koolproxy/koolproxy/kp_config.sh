@@ -31,8 +31,6 @@ start_koolproxy(){
 	cd /koolshare/koolproxy && koolproxy $EXT_ARG --mark -d
 }
 
-
-
 stop_koolproxy(){
 	echo_date 关闭koolproxy主进程...
 	kill -9 `pidof koolproxy` >/dev/null 2>&1
@@ -80,18 +78,6 @@ restart_dnsmasq(){
 		echo_date 重启dnsmasq进程...
 		service restart_dnsmasq > /dev/null 2>&1
 	fi
-}
-
-add_ss_event(){
-	start=`dbus list __event__onssstart_|grep koolproxy`
-	if [ -z "$start" ];then
-	echo_date 添加ss事件触发：当ss启用或者重启，重新加载koolproxy的nat规则.
-	dbus event onssstart_koolproxy /koolshare/koolproxy/kp_config.sh
-	fi
-}
-
-remove_ss_event(){
-	dbus remove __event__onssstart_koolproxy
 }
 
 write_reboot_job(){
@@ -218,7 +204,6 @@ lan_acess_control(){
 	else
 		echo_date 加载ACL规则：所有模式为：$(get_mode_name $koolproxy_acl_default_mode)
 	fi
-
 }
 
 load_nat(){
@@ -309,7 +294,6 @@ start)
 	creat_start_up
 	write_nat_start
 	write_reboot_job
-	add_ss_event
 	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
 	echo_date =================================================
 	;;
@@ -317,7 +301,6 @@ restart)
 	# now stop
 	echo_date ================== 关闭 =================
 	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
-	remove_ss_event
 	remove_reboot_job
 	remove_ipset_conf
 	remove_nat_start
@@ -336,13 +319,11 @@ restart)
 	creat_start_up
 	write_nat_start
 	write_reboot_job
-	add_ss_event
 	echo_date koolproxy启用成功，请等待日志窗口自动关闭，页面会自动刷新...
 	echo_date =================================================
 	;;
 stop)
 	rm -rf /tmp/user.txt
-	remove_ss_event
 	remove_reboot_job
 	remove_ipset_conf && restart_dnsmasq
 	remove_nat_start
