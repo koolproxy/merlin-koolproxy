@@ -41,9 +41,9 @@ stop_koolproxy(){
 }
 
 creat_start_up(){
-	[ ! -L "/koolshare/init.d/S93koolproxy.sh" ] && {
+	[ ! -L "/koolshare/init.d/S98koolproxy.sh" ] && {
 		echo_date 加入开机自动启动...
-		ln -sf /koolshare/koolproxy/kp_config.sh /koolshare/init.d/S93koolproxy.sh
+		ln -sf /koolshare/koolproxy/kp_config.sh /koolshare/init.d/S98koolproxy.sh
 	}
 }
 
