@@ -211,7 +211,6 @@ lan_acess_control(){
 }
 
 load_nat(){
-	nat_ready=$(iptables -t nat -L PREROUTING -v -n --line-numbers|grep -v PREROUTING|grep -v destination)
 	i=120
 	# laod nat rules
 	until [ -n "$nat_ready" ]
@@ -223,6 +222,7 @@ load_nat(){
 	        exit
 	    fi
 	    sleep 1
+		nat_ready=$(iptables -t nat -L PREROUTING -v -n --line-numbers|grep -v PREROUTING|grep -v destination)
 	done
 	
 	echo_date 加载nat规则！
