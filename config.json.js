@@ -2,8 +2,8 @@
     "build_date": "2016-12-27_09:15:58", 
     "description": "去广告，没烦恼", 
     "home_url": "Module_koolproxy.asp", 
-    "md5": "8282b787a6964f6c0b49f2090f292778", 
+    "md5": "1227236c3f4d112fb136a943f52c0a80", 
     "module": "koolproxy", 
     "title": "koolproxy", 
-    "version": "3.6.3"
+    "version": "3.7.2"
 }
