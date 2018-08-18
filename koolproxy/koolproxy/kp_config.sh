@@ -6,7 +6,18 @@ eval `dbus export koolproxy`
 source /koolshare/scripts/base.sh
 alias echo_date='echo 【$(TZ=UTC-8 date -R +%Y年%m月%d日\ %X)】:'
 lan_ipaddr=$(nvram get lan_ipaddr)
+LOCK_FILE=/var/lock/koolproxy.lock
 #====================================================================
+
+set_lock(){
+	exec 1000>"$LOCK_FILE"
+	flock -x 1000
+}
+
+unset_lock(){
+	flock -u 1000
+	rm -rf "$LOCK_FILE"
+}
 
 get_lan_cidr(){
 	netmask=`nvram get lan_netmask`
@@ -178,7 +189,7 @@ flush_nat(){
 	if [ -n "`iptables -t nat -S|grep KOOLPROXY`" ];then
 		echo_date 移除nat规则...
 		cd /tmp
-		iptables -t nat -S | grep -E "KOOLPROXY|KOOLPROXY_HTTP|KOOLPROXY_HTTPS" | sed 's/-A/iptables -t nat -D/g'|sed 1,3d > clean.sh && chmod 777 clean.sh && ./clean.sh && rm clean.sh
+		iptables -t nat -S | grep -E "KOOLPROXY|KOOLPROXY_HTTP|KOOLPROXY_HTTPS" | sed 's/-A/iptables -t nat -D/g'|sed 1,3d > clean.sh && chmod 777 clean.sh && ./clean.sh > /dev/null 2>&1 && rm clean.sh
 		iptables -t nat -X KOOLPROXY > /dev/null 2>&1
 		iptables -t nat -X KOOLPROXY_HTTP > /dev/null 2>&1
 		iptables -t nat -X KOOLPROXY_HTTPS > /dev/null 2>&1
@@ -242,7 +253,7 @@ load_nat(){
 	# 剩余流量转发到缺省规则定义的链中
 	iptables -t nat -A KOOLPROXY -p tcp -j $(get_action_chain $koolproxy_acl_default_mode)
 	# 重定所有流量到 KOOLPROXY
-	SS_NU=`iptables -nvL PREROUTING -t nat |sed 1,2d | sed -n '/SHADOWSOCKS/='`
+	SS_NU=`iptables -nvL PREROUTING -t nat |sed 1,2d | sed -n '/SHADOWSOCKS/='|head -n1`
 	[ -z "$SS_NU" ] && SS_NU=1
 	# 全局模式和视频模式
 	[ "$koolproxy_policy" == "1" ] || [ "$koolproxy_policy" == "3" ] && iptables -t nat -I PREROUTING $SS_NU -p tcp -j KOOLPROXY
@@ -251,7 +262,6 @@ load_nat(){
 }
 
 dns_takeover(){
-	ss_chromecast=`dbus get ss_basic_chromecast`
 	lan_ipaddr=`nvram get lan_ipaddr`
 	#chromecast=`iptables -t nat -L PREROUTING -v -n|grep "dpt:53"`
 	chromecast_nu=`iptables -t nat -L PREROUTING -v -n --line-numbers|grep "dpt:53"|awk '{print $1}'`
@@ -259,17 +269,6 @@ dns_takeover(){
 		if [ -z "$chromecast_nu" ]; then
 			echo_date 黑名单模式开启DNS劫持
 			iptables -t nat -A PREROUTING -p udp -s $(get_lan_cidr) --dport 53 -j DNAT --to $lan_ipaddr >/dev/null 2>&1
-		else
-			echo_date DNS劫持规则已经添加，跳过~
-		fi
-	else
-		if [ "$ss_chromecast" != "1" ]; then
-			if [ ! -z "$chromecast_nu" ]; then
-				echo_date 全局过滤模式下删除DNS劫持
-				iptables -t nat -D PREROUTING $chromecast_nu >/dev/null 2>&1
-				echo_date done
-				echo_date
-			fi
 		fi
 	fi
 }
@@ -286,12 +285,19 @@ detect_cert(){
 
 case $ACTION in
 start)
-	# 开机启动
+	# used by scripts from wan restart
+	set_lock
 	if [ "$koolproxy_enable" == "1" ];then
 		logger "koolproxy开机启动！"
-		echo_date ================== koolproxy启用 =================
+		echo_date ================== koolproxy启用 ================
+		rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
+		remove_reboot_job
+		remove_ipset_conf
+		remove_nat_start
+		flush_nat
+		stop_koolproxy
 		detect_cert
-		#load_module
+		load_module
 		start_koolproxy
 		add_ipset_conf && restart_dnsmasq
 		creat_ipset
@@ -300,14 +306,17 @@ start)
 		dns_takeover
 		write_nat_start
 		write_reboot_job
+		creat_start_up
 		rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
 		echo_date =================================================
 	else
 		logger "koolproxy未设置开机启动，跳过"
 	fi
+	unset_lock
 	;;
 restart)
-	# now stop
+	# used by web
+	set_lock
 	echo_date ================== 关闭 =================
 	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
 	remove_reboot_job
@@ -318,9 +327,9 @@ restart)
 	# now start
 	echo_date ================== koolproxy启用 =================
 	detect_cert
+	load_module
 	start_koolproxy
 	add_ipset_conf && restart_dnsmasq
-	load_module
 	creat_ipset
 	add_white_black_ip
 	load_nat
@@ -330,29 +339,35 @@ restart)
 	creat_start_up
 	echo_date koolproxy启用成功，请等待日志窗口自动关闭，页面会自动刷新...
 	echo_date =================================================
+	unset_lock
 	;;
 stop)
+	set_lock
 	rm -rf /tmp/user.txt
 	remove_reboot_job
 	remove_ipset_conf && restart_dnsmasq
 	remove_nat_start
 	flush_nat
 	stop_koolproxy
+	unset_lock
 	;;
 stop_nat)
+	set_lock
 	flush_nat
+	unset_lock
 	;;
 *)
-	# 如果是开机启动，则不加载
-	WAN_ACTION=`ps|grep /jffs/scripts/wan-start|grep -v grep`
-	[ -n "$WAN_ACTION" ] && exit
+	set_lock
+	#WAN_ACTION=`ps|grep /jffs/scripts/wan-start|grep -v grep`
 	if [ "$koolproxy_enable" == "1" ] ;then
-		load_module
-		flush_nat
-		creat_ipset
-		add_white_black_ip
-		load_nat
-		dns_takeover
+		load_module >/tmp/koolproxy_nat_log.txt 2>&1
+		flush_nat >>/tmp/koolproxy_nat_log.txt 2>&1
+		sleep 1
+		creat_ipset >>/tmp/koolproxy_nat_log.txt 2>&1
+		add_white_black_ip >>/tmp/koolproxy_nat_log.txt 2>&1
+		load_nat >>/tmp/koolproxy_nat_log.txt 2>&1
+		dns_takeover >>/tmp/koolproxy_nat_log.txt 2>&1
 	fi
+	unset_lock
 	;;
 esac
