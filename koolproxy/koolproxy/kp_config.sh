@@ -1,13 +1,17 @@
 #! /bin/sh
-# 导入skipd数据
-eval `dbus export koolproxy`
 
-# 引用环境变量等
-source /koolshare/scripts/base.sh
+# shadowsocks script for arm router with kernel 2.6.36.4 merlin firmware
+# by sadog (sadoneli@gmail.com) from koolshare.cn
+
 alias echo_date='echo 【$(TZ=UTC-8 date -R +%Y年%m月%d日\ %X)】:'
+export KSROOT=/koolshare
+source $KSROOT/scripts/base.sh
+eval `dbus export koolproxy_`
+SOFT_DIR=/koolshare
+KP_DIR=$SOFT_DIR/koolproxy
 lan_ipaddr=$(nvram get lan_ipaddr)
 LOCK_FILE=/var/lock/koolproxy.lock
-#====================================================================
+#=======================================
 
 set_lock(){
 	exec 1000>"$LOCK_FILE"
@@ -29,18 +33,31 @@ get_lan_cidr(){
 	echo $lan_ipaddr/$suffix
 }
 
-write_user_txt(){
-	if [ -n "$koolproxy_user_rule" ];then
-		echo $koolproxy_user_rule | base64_decode > /koolshare/koolproxy/data/rules/user.txt
+write_sourcelist(){
+	if [ -n "$koolproxy_sourcelist" ];then
+		echo $koolproxy_sourcelist|sed 's/>/\n/g' > $KP_DIR/data/source.list
+	else
+		cat > $KP_DIR/data/source.list <<-EOF
+			1|koolproxy.txt|https://kprule.com/koolproxy.txt|
+			1|daily.txt|https://kprule.com/daily.txt|
+			1|kp.dat|https://kprule.com/kp.dat|
+			1|user.txt||
+			
+		EOF
+	fi
+	
+	if [ -n "$koolproxy_custom_rule" ];then
+		echo $koolproxy_custom_rule| base64_decode |sed 's/\\n/\n/g' > $KP_DIR/data/rules/user.txt
+		dbus remove koolproxy_custom_rule
 	fi
 }
 
 start_koolproxy(){
+	write_sourcelist
 	echo_date 开启koolproxy主进程！
-	[ -f "/koolshare/bin/koolproxy" ] && rm -rf /koolshare/bin/koolproxy
-	[ ! -L "/koolshare/bin/koolproxy" ] && ln -sf /koolshare/koolproxy/koolproxy /koolshare/bin/koolproxy
-	[ "$koolproxy_policy" == "3" ] && EXT_ARG="-e" || EXT_ARG=""
-	cd /koolshare/koolproxy && koolproxy $EXT_ARG --mark -d
+	[ ! -L "$KSROOT/bin/koolproxy" ] && ln -sf $KSROOT/koolproxy/koolproxy $KSROOT/bin/koolproxy
+	cd $KP_DIR && koolproxy --mark -d
+	[ "$?" != "0" ] && dbus set koolproxy_enable=0 && exit 1
 }
 
 stop_koolproxy(){
@@ -71,7 +88,7 @@ remove_nat_start(){
 }
 
 add_ipset_conf(){
-	if [ "$koolproxy_policy" == "2" ];then
+	if [ "$koolproxy_mode" == "2" ];then
 		echo_date 添加黑名单软连接...
 		rm -rf /jffs/configs/dnsmasq.d/koolproxy_ipset.conf
 		ln -sf /koolshare/koolproxy/data/koolproxy_ipset.conf /jffs/configs/dnsmasq.d/koolproxy_ipset.conf
@@ -83,6 +100,7 @@ remove_ipset_conf(){
 	if [ -L "/jffs/configs/dnsmasq.d/koolproxy_ipset.conf" ];then
 		echo_date 移除黑名单软连接...
 		rm -rf /jffs/configs/dnsmasq.d/koolproxy_ipset.conf
+		dnsmasq_restart=1
 	fi
 }
 
@@ -97,10 +115,10 @@ write_reboot_job(){
 	# start setvice
 	if [ "1" == "$koolproxy_reboot" ]; then
 		echo_date 开启插件定时重启，每天"$koolproxy_reboot_hour"时"$koolproxy_reboot_min"分，自动重启插件...
-		cru a koolproxy_reboot "$koolproxy_reboot_min $koolproxy_reboot_hour * * * /bin/sh /koolshare/koolproxy/kp_config.sh restart"
+		cru a koolproxy_reboot "$koolproxy_reboot_min $koolproxy_reboot_hour * * * /bin/sh $KP_DIR/kp_config.sh restart"
 	elif [ "2" == "$koolproxy_reboot" ]; then
-		cru a koolproxy_reboot "*/$koolproxy_reboot_inter_min */$koolproxy_reboot_inter_hour * * * /bin/sh /koolshare/koolproxy/kp_config.sh restart"
 		echo_date 开启插件间隔重启，每隔"$koolproxy_reboot_inter_hour"时"$koolproxy_reboot_inter_min"分，自动重启插件...
+		cru a koolproxy_reboot "*/$koolproxy_reboot_inter_min */$koolproxy_reboot_inter_hour * * * /bin/sh $KP_DIR/kp_config.sh restart"
 	fi
 }
 
@@ -113,22 +131,16 @@ remove_reboot_job(){
 	fi
 }
 
-load_module(){
+creat_ipset(){
 	xt=`lsmod | grep xt_set`
 	OS=$(uname -r)
-	if [ -f /lib/modules/${OS}/kernel/net/netfilter/xt_set.ko ] && [ -z "$xt" ];then
+	if [ -z "$xt" ] && [ -f "/lib/modules/${OS}/kernel/net/netfilter/xt_set.ko" ];then
 		echo_date "加载xt_set.ko内核模块！"
 		insmod /lib/modules/${OS}/kernel/net/netfilter/xt_set.ko
 	fi
-}
-
-creat_ipset(){
 	echo_date 创建ipset名单
 	ipset -N white_kp_list nethash
 	ipset -N black_koolproxy iphash
-}
-
-add_white_black_ip(){
 	ip_lan="0.0.0.0/8 10.0.0.0/8 100.64.0.0/10 127.0.0.0/8 169.254.0.0/16 172.16.0.0/12 192.168.0.0/16 224.0.0.0/4 240.0.0.0/4"
 	for ip in $ip_lan
 	do
@@ -222,6 +234,7 @@ lan_acess_control(){
 }
 
 load_nat(){
+	nat_ready=$(iptables -t nat -L PREROUTING -v -n --line-numbers|grep -v PREROUTING|grep -v destination)
 	i=120
 	# laod nat rules
 	until [ -n "$nat_ready" ]
@@ -253,19 +266,17 @@ load_nat(){
 	# 剩余流量转发到缺省规则定义的链中
 	iptables -t nat -A KOOLPROXY -p tcp -j $(get_action_chain $koolproxy_acl_default_mode)
 	# 重定所有流量到 KOOLPROXY
-	SS_NU=`iptables -nvL PREROUTING -t nat |sed 1,2d | sed -n '/SHADOWSOCKS/='|head -n1`
-	[ -z "$SS_NU" ] && SS_NU=1
 	# 全局模式和视频模式
-	[ "$koolproxy_policy" == "1" ] || [ "$koolproxy_policy" == "3" ] && iptables -t nat -I PREROUTING $SS_NU -p tcp -j KOOLPROXY
+	[ "$koolproxy_mode" == "1" ] || [ "$koolproxy_mode" == "3" ] && iptables -t nat -I PREROUTING 1 -p tcp -j KOOLPROXY
 	# ipset 黑名单模式
-	[ "$koolproxy_policy" == "2" ] && iptables -t nat -I PREROUTING $SS_NU -p tcp -m set --match-set black_koolproxy dst -j KOOLPROXY
+	[ "$koolproxy_mode" == "2" ] && iptables -t nat -I PREROUTING 1 -p tcp -m set --match-set black_koolproxy dst -j KOOLPROXY
 }
 
 dns_takeover(){
 	lan_ipaddr=`nvram get lan_ipaddr`
 	#chromecast=`iptables -t nat -L PREROUTING -v -n|grep "dpt:53"`
 	chromecast_nu=`iptables -t nat -L PREROUTING -v -n --line-numbers|grep "dpt:53"|awk '{print $1}'`
-	if [ "$koolproxy_policy" == "2" ]; then
+	if [ "$koolproxy_mode" == "2" ]; then
 		if [ -z "$chromecast_nu" ]; then
 			echo_date 黑名单模式开启DNS劫持
 			iptables -t nat -A PREROUTING -p udp -s $(get_lan_cidr) --dport 53 -j DNAT --to $lan_ipaddr >/dev/null 2>&1
@@ -274,81 +285,77 @@ dns_takeover(){
 }
 
 detect_cert(){
-	if [ ! -f /koolshare/koolproxy/data/private/ca.key.pem ]; then
+	if [ ! -f $KP_DIR/data/private/ca.key.pem ]; then
 		echo_date 检测到首次运行，开始生成koolproxy证书，用于https过滤！
 		echo_date 生成证书需要较长时间，请一定耐心等待！！！
-		cd /koolshare/koolproxy/data && sh gen_ca.sh
-		#cd /koolshare/koolproxy && ./koolproxy --cert >/dev/null 2>&1
+		cd $KP_DIR/data && sh gen_ca.sh
 		echo_date 证书生成完毕！！！
 	fi
 }
 
 case $ACTION in
 start)
-	# used by scripts from wan restart
+	#开机触发，wan重启触发，所以需要先关后开
 	set_lock
 	if [ "$koolproxy_enable" == "1" ];then
-		logger "koolproxy开机启动！"
-		echo_date ================== koolproxy启用 ================
+		logger "[软件中心]: 启动koolproxy插件！"
 		rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
 		remove_reboot_job
-		remove_ipset_conf
-		remove_nat_start
 		flush_nat
 		stop_koolproxy
+		remove_ipset_conf && restart_dnsmasq
 		detect_cert
-		load_module
 		start_koolproxy
 		add_ipset_conf && restart_dnsmasq
 		creat_ipset
-		add_white_black_ip
 		load_nat
 		dns_takeover
 		write_nat_start
 		write_reboot_job
 		creat_start_up
-		rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
-		echo_date =================================================
 	else
-		logger "koolproxy未设置开机启动，跳过"
+		logger "[软件中心]: koolproxy插件未开启，不启动！"
 	fi
 	unset_lock
 	;;
 restart)
-	# used by web
+	#web提交触发，需要先关后开
+	# now stop
 	set_lock
-	echo_date ================== 关闭 =================
+	echo_date ================================ 关闭 ===============================
 	rm -rf /tmp/user.txt && ln -sf /koolshare/koolproxy/data/rules/user.txt /tmp/user.txt
 	remove_reboot_job
-	remove_ipset_conf
+	remove_ipset_conf && restart_dnsmasq
 	remove_nat_start
 	flush_nat
 	stop_koolproxy
 	# now start
-	echo_date ================== koolproxy启用 =================
+	echo_date ============================ koolproxy启用 ===========================
 	detect_cert
-	load_module
 	start_koolproxy
 	add_ipset_conf && restart_dnsmasq
 	creat_ipset
-	add_white_black_ip
 	load_nat
 	dns_takeover
 	write_nat_start
 	write_reboot_job
 	creat_start_up
 	echo_date koolproxy启用成功，请等待日志窗口自动关闭，页面会自动刷新...
-	echo_date =================================================
+	echo_date =====================================================================
 	unset_lock
 	;;
 stop)
+	#web提交触发，需要先关后开
 	set_lock
+	echo_date ================================ 关闭 ===============================
 	rm -rf /tmp/user.txt
 	remove_reboot_job
 	remove_ipset_conf && restart_dnsmasq
 	remove_nat_start
 	flush_nat
 	stop_koolproxy
+	echo_date koolproxy插件已关闭
+	echo_date =====================================================================
 	unset_lock
 	;;
 stop_nat)
@@ -360,13 +367,20 @@ stop_nat)
 	set_lock
 	#WAN_ACTION=`ps|grep /jffs/scripts/wan-start|grep -v grep`
 	if [ "$koolproxy_enable" == "1" ] ;then
-		load_module >/tmp/koolproxy_nat_log.txt 2>&1
-		flush_nat >>/tmp/koolproxy_nat_log.txt 2>&1
-		sleep 1
-		creat_ipset >>/tmp/koolproxy_nat_log.txt 2>&1
-		add_white_black_ip >>/tmp/koolproxy_nat_log.txt 2>&1
-		load_nat >>/tmp/koolproxy_nat_log.txt 2>&1
-		dns_takeover >>/tmp/koolproxy_nat_log.txt 2>&1
+		remove_reboot_job
+		remove_ipset_conf && restart_dnsmasq
+		remove_nat_start
+		flush_nat
+		stop_koolproxy
+		detect_cert
+		start_koolproxy
+		add_ipset_conf && restart_dnsmasq
+		creat_ipset
+		load_nat
+		dns_takeover
+		write_nat_start
+		write_reboot_job
+		creat_start_up
 	fi
 	unset_lock
 	;;

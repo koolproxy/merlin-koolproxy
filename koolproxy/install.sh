@@ -49,8 +49,8 @@ rm -rf /tmp/koolproxy* >/dev/null 2>&1
 [ -z "$koolproxy_policy" ] && dbus set koolproxy_policy=1
 [ -z "$koolproxy_acl_default_mode" ] && dbus set koolproxy_acl_default_mode=1
 dbus set softcenter_module_koolproxy_install=1
-dbus set softcenter_module_koolproxy_version=3.7.2
-dbus set koolproxy_version=3.7.2
+dbus set softcenter_module_koolproxy_version=3.8.3
+dbus set koolproxy_version=3.8.3
 
 
 [ "$koolproxy_enable" == "1" ] && sh /koolshare/koolproxy/kp_config.sh restart
