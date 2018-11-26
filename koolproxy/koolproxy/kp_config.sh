@@ -213,7 +213,7 @@ flush_nat(){
 lan_acess_control(){
 	# lan access control
 	[ -z "$koolproxy_acl_default_mode" ] && koolproxy_acl_default_mode=1
-	acl_nu=`dbus list koolproxy_acl_mode|sed 1d|sort -n -t "=" -k 2|cut -d "=" -f 1 | cut -d "_" -f 4`
+	acl_nu=`dbus list koolproxy_acl_mode_|sort -n -t "_" -k 4|cut -d "=" -f 1 | cut -d "_" -f 4`
 	if [ -n "$acl_nu" ]; then
 		for acl in $acl_nu
 		do
@@ -227,7 +227,6 @@ lan_acess_control(){
 			iptables -t nat -A KOOLPROXY $(factor $ipaddr "-s") $(factor $mac "-m mac --mac-source") -p tcp $(get_jump_mode $proxy_mode) $(get_action_chain $proxy_mode)
 		done
 		echo_date 加载ACL规则：其余主机模式为：$(get_mode_name $koolproxy_acl_default_mode)
-		
 	else
 		echo_date 加载ACL规则：所有模式为：$(get_mode_name $koolproxy_acl_default_mode)
 	fi

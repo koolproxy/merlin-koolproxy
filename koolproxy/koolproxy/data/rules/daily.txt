@@ -1,118 +1,61 @@
 !x  -----------------------------------------------------------------------------------------------------------------
-!x  -----[KoolProxy 3.8.3]
+!x  -----[KoolProxy 3.8.4]
 !x  -----Thanks: From lvba Group
-!x  -----Thanks for help: <yiclear> <adbyby>
+!x  -----Thanks for help: <yiclear> <adbyby> <adm>
 !x  -----------------------------------------------------------------------------------------------------------------
+!|https://m.biquke.com/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/hide.js"></script></head>@
 !|https://pan.baidu.com/feproxy/ad/list?
+|https://bonuscloud.io/$r@https://bonuscloud.io/@https://kprules.b0.upaiyun.com/null/404.html@
+|https://console.bonuscloud.io/$r@/https:\/\/.*\.bonuscloud\.io\/.*/@https://kprules.b0.upaiyun.com/null/404.html@
+||tieba.com/p/$s@<div class="l_post l_post_bright j_l_post clearfix ?????????? "@<div style="display:none"@
+|https://www.ppx26.com/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/hide.js"></script></head>@
+|http://www.discuz.net/$s@</head>@<script src="http://kprules.b0.upaiyun.com/js/hide.js"></script></head>@
+|http://www.avtbk.com/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/AR.js"></script></head>@
+|https://www.dyfc.net/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/AR.js"></script></head>@
+||wmxa.cn/$s@</head>@<script src="http://kprules.b0.upaiyun.com/js/hide.js"></script></head>@
+|http://www.tiexue.net/$s@</head>@<script src="http://kprules.b0.upaiyun.com/js/AR.js"></script></head>@
+|https://www.baidu.com/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/baidu_ad.js"></script></head>@
+|https://m.baidu.com/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/baidu_ad.js"></script></head>@
+|https://yaoshe28.com/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/AR.js"></script></head>@
+|https://www.kafan.cn/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/AR.js"></script></head>@
+|https://www.kafan.cn/$s@</body>@<script>fuckcss('p:contains(腾讯视频),p:contains(理论永久)');</script></body>@
+||https://halihali.tv/$s@</head>@<script src="https://kprules.b0.upaiyun.com/js/AR.js"></script></head>@
+|http://sports.eastday.com$s@</body>@<script>fuckcss('a.dalink')</script></body>@
 !x  -----------------------------------------------------------------------------------------------------------------
+|https://user.qzone.qq.com##div#QM_Container_100005,DIV#idQbossHotbar,DIV#div_corner_ad_container.gb_ad_tearing_angle,DIV#qbs_tips_div,div.gdtads_box,li[class="f-single f-s-s f-single-biz"],div.icenter-right-mod.icenter-right-ad,div#QM_100005_Body.bd,DIV.fn-feed-mod-bd,DIV.ck-act,.sogo-ad,#top-banner,.f-vqz-ad,.collet_box.fn_paipai
+ifeng.com##[id^="optimusPrimeContentId_"],#optimusPrimeContentId
+||https://youth.cn##div.edu-a_dds,div.hd_banner,div.r_huandeng,div.article_d,div[class^="ad00"],iframe[width="200px"][height="200px"],div[id^="myads"][class^="ad0"],div.ad,div[class^="banner"],DIV#sky.fdiv,DIV#identifier-pannel,DIV#sky.div,DIV.pic_banner,DIV.hd_pic,DIV.cj-ggw,div.download,.header
+||https://youth.cn##.ad_space_left,.ad_space_left_box
 !|https://pan.baidu.com,yun.baidu.com##[id^="share-ad-"],A#share_ad_info_panl,div[id^="cpro_"],img.share-center,.ad-platform-tips,.banner-active
+|https://toutiao.jxnews.com.cn##.adclass,.mediav-newsfeed-listitem-type-1,.mediavfeed-newsitem,#corner-flash,.ads-lbotton
+gocloud.cn##.a_pt,.a_mu
+www.96fei.com##.content-wrapper
+javccup.net##.img-responsive,[id^="divShow"]
+|https://sports.eastday.com##a[class="dalink"]
+|https://www.bnext.com.tw##.col.view_sidebar.d-none.d-lg-block,.ad_box,.ad_space,div[id^="div-gpt-ad"],.ytp-ad-progress-list
 !x  -----------------------------------------------------------------------------------------------------------------
-0573ren.com##[src^="http://s1.0573fang.com/upimg/ads/"],.weblistad,.a_pb,.w1000.ad
-0597kk.com##[height="70"]
-0830bbs.com##[id^="comiis_xizi_gg"],.comiis_toubox_gg
-121down.com###full_downad,#info_left_ad,.show_ad
-12306cctv.com##.adv
-1905.com##.zx-pic,.zx-small-pic,.adArea,#ad360
-1haza.com##.banner,.height60,.popup,.banner2
-5200xs.org##.adsbygoogle
-@@||360doc.com/resaveartsmall.aspx
-bitauto.com##.best-car,.buy2018-freetax,.ad-tag2
-chcj.net##.bottomad
-china.com##.adcon,.item_alink
-downsx.com##.adbox,.Left-ad3_fixed,.google-ad2_fixed
-dysfz.vip##[class^="adv-"],.item .item-container
-f-fans.club###carouselExampleIndicators
-fanjian.net##.bkgd-topapps,.gd
-fx110.com##.dealer_advertising,[class^="Adv_"],.zypf,.contact_fs
-gaoqingkong.com##[src*=".sinaimg.cn/large/"]
-ikaka.com##.ad_textlink1
-iplaypy.com##.adsbygoogle
-jxcn.cn##[class^="mediav-"],.dsp_yxxf
-panda.tv##.room-banner-images
-rjno1.com###m560,.rjnocheck
-shixunwan.cn##[class^="adSpace"]
-soyunpan.com##.jmwd-right,.jmwd-right2,[src="http://cdn.hen360.com/image/soyunpan/soyunpan-3.gif"]
-tvmao.com##[ad],[class$="_ad"]
-xmfish.com##.bobing-theme,.adv-960
-zhangyue.com##[class^="aladdin_"]
-zhihu.com##.Card.Banner,.adsbygoogle,.Banner-link
-znjj.tv##.adver1,[class$="_guanggao"]
+|https://common.jxnews.com.cn/20
+|https://imgcdn.toutiaoyule.com/*/adimg/*
+|http://www.gocloud.cn/bbs/static/image/common/ad.gif
+||https://youth.cn/images/adyun.js
+|https://news.youth.cn/images/youth_sjy_$script
+||https://ifengimg.com/iis/iis_
+||https://ifengimg.com/ifeng/sources/
+||cr-nielsen.com^
+|https://ivy.pconline.com.cn^
+|https://jwz.3conline.com/adpuba/
+|https://m.pconline.com.cn/*_ad.jsp?
+||https://dytt8.net/js$script
+||https://dytt8.net/js1/
+|https://photo.0234408.cn/
+||https://pxyvb.cn^
+|https://m.yoxus.cn
+|http://*/*_*@*.exe
+|http://*/*@*_*.exe
+||https://popin.cc^
+||https://innity.net^
+||https://pixfs.net/js/adsbyfalcon.
+|https://ad-specs.guoshipartners.com/
 !x  -----------------------------------------------------------------------------------------------------------------
-|http://*.com/js/aa.htm
-|http://*.com/ms/c-
-|http://cdn.hen360.com/scrtips/soyunpan_new.js
-|http://m.*.com/js/2254a
-|http://m.3kdu.com/17mb/script/wap.js$s@function index_top*function tj_3k()@function xxx()@
-|http://m.fcdm.cc/js/ne/*.js.pagespeed.jc.$script
-|http://m.shuquge.com/js/wap.js
-|http://oa-mssp.data.aliyun.com/fetch_creative_ability?mode=
-|http://static.iqiyi.com/js/player_v1/res/20$s@<span class=cd-time>*</span>@<span class=cd-time>0</span>@
-|http://www.360doc.com/js/showarticle.js?t=
-|http://zt2.wa5as4.com/vd1f26/199/
-|https://m.*.com/114.html^|
-||1.qjhm.net/
-||118ex.cn
-||121down.com/js/173.js
-||18tzx.com
-||3456porn.com:538/attachment/js/
-||77nt.com/js/wap.js
-||ai235.com/discor_list.js
-||anhuilitian.net
-||aodongjiaosu.com
-||avsmt.cn
-||baiduyoukualiyun.com
-||biochempop.com^
-||bitanzi.cn/xiwang/fumeiti.js
-||ccunf.com
-||cdn.bootcss.com/zepto/*/zepto.js
-||china.com/jsfiles/gotopgg/
-||clickmon.co.kr/pop/wp_ad
-||dd.browser.360.cn/static$image
-||dev.tg.wan.360.cn
-||diuling.com
-||dxcssc.cn
-||dysfz.vip/js/ads2.js
-||ewtsoft.com
-||fbaot.com
-||fenvm.com
-||fx110.com/Scripts/*/gulpmin/Ghz/Ghz.min.js?v=
-||geren-jianli.com/arttop.js
-||ggx.cmvideo.cn/request/
-||guansenff.cn
-||hnzyfs.com
-||jxcn.cn/assets/js/360ads.js^
-||jyhwt.cn
-||kexigia.com
-||ks67.com
-||kuangtuiguoo18888.com
-||ldb.cc/js/top.js
-||linwukui.cn
-||m.biqudao.com/js/wap.js
-||m.tvmao.com/$s@function addAD@function xxx@
-||m.x23us.la/23/h.js
-||meitulu.com/css/showgg.js
-||news.china.com/*/news.360.*.common.js^$s@var oneAd =@@
-||nkscdn.com
-||node.cdntxt.com
-||nuxyz.cn
-||nxwly.com
-||qiaopiguniang.com
-||rongnews.com
-||sellxiu.com
-||shenbimall.com^
-||sinaimg.cn/large/$domain=taoy66.info
-||soyunpan.com$s@var  win_pop_ip=*</script>@</script>@
-||ssports.iqiyi.com/play/$s@var adid = "0";@var adid = "-1";@
-||staticjs.cn
-||tatahn.com
-||tmrmixer.cn
-||vbaiu.com
-||www.id97.com/$s@<script src="https://jc.anhuilitian.net/*.js"></script>@@
-||x23us.la/23/true.js
-||x81zw.com/x81.js$s@function style_top()*function tjkk()@function xxx()@
-||xlsschina15.net
-||ydfz.org
-||yiybb.com/inc/myidong.js
-||yiybb.com/inc/p-t.js
-||yzjlsb.com
+|https://hao.360.cn###header-patch,#daily-hotwords,#top_activity,#top_hotsite,#activity,#iguess,.mbar-bd,#festival-logoskin,#plane > .plane-hd,.cangbao_redbags,#top-full-column-tips,#plane-ria,.ad-top
 !x  -----------------------------------------------------------------------------------------------------------------

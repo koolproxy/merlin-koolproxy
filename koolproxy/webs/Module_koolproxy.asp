@@ -284,8 +284,8 @@ function get_dbus_data(){
 		success: function(response) {
 			$.globalEval(response)
 			dbus = db_koolproxy_
-			conf2obj();
 			generate_options();
+			conf2obj();
 			refresh_acl_table();
 			refresh_rule_table();
 			get_run_status();
@@ -314,7 +314,6 @@ function hook_event(){
 		function(){
 		if(E('koolproxy_enable').checked){
 			dbus["koolproxy_enable"] = "1";
-			dbus["koolproxy_basic_action"] = "1";
 			E("policy_tr").style.display = "";
 			E("kp_status").style.display = "";
 			E("auto_reboot_switch").style.display = "";
@@ -326,7 +325,6 @@ function hook_event(){
 			E("ACL_note").style.display = "";
 		}else{
 			dbus["koolproxy_enable"] = "0";
-			dbus["koolproxy_basic_action"] = "0";
 			E("policy_tr").style.display = "none";
 			E("kp_status").style.display = "none";
 			E("auto_reboot_switch").style.display = "none";
@@ -356,7 +354,7 @@ function generate_options(){
 }
 
 function get_run_status(){
-	E("koolproxy_status").innerHTML = "状态获取中..."
+	//E("koolproxy_status").innerHTML = "状态获取中..."
 	$.ajax({
 		url: 'apply.cgi?current_page=Module_koolproxy.asp&next_page=Module_koolproxy.asp&group_id=&modified=0&action_mode=+Refresh+&action_script=&action_wait=&first_time=&preferred_lang=CN&SystemCmd=koolproxy_status.sh&firmver=3.0.0.4',
 		dataType: 'html',
@@ -1129,7 +1127,7 @@ function save(){
 	// collect data from acl pannel
 	maxid = parseInt($("#ACL_table > tbody > tr:eq(-2) > td:nth-child(1) > input").attr("id").split("_")[3]);
 	for ( var i = 1; i <= maxid; ++i ) {
-		if (E("koolproxy_acl_ip_" + i)){
+		if (E("koolproxy_acl_ip_" + i) || E("koolproxy_acl_mac_" + i)){
 			dbus["koolproxy_acl_ip_" + i] = E("koolproxy_acl_ip_" + i).value;
 			dbus["koolproxy_acl_mac_" + i] = E("koolproxy_acl_mac_" + i).value;
 			dbus["koolproxy_acl_name_" + i] = E("koolproxy_acl_name_" + i).value;
@@ -1184,6 +1182,12 @@ function save(){
 	dbus["SystemCmd"] = "koolproxy_config.sh";
 	dbus["action_mode"] = " Refresh ";
 	dbus["current_page"] = "Module_koolproxy.asp";
+
+	if(dbus["koolproxy_enable"] == "1"){
+		dbus["koolproxy_basic_action"] = "1";
+	}else{
+		dbus["koolproxy_basic_action"] = "0";
+	}
 
 	$.ajax({
 		type: "POST",
