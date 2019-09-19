@@ -31,9 +31,9 @@ def get_or_create():
 
 def build_module():
 
-    pre_script = os.path.join(parent_path, "update.sh")
-    if os.path.isfile(pre_script):
-        os.system(pre_script)
+    #pre_script = os.path.join(parent_path, "update.sh")
+    #if os.path.isfile(pre_script):
+    #    os.system(pre_script)
 	
     try:
         conf = get_or_create()

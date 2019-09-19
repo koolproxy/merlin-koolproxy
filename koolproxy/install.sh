@@ -55,4 +55,6 @@ dbus set koolproxy_version=3.8.3
 
 [ "$koolproxy_enable" == "1" ] && sh /koolshare/koolproxy/kp_config.sh restart
 
+exit 0
+
 
