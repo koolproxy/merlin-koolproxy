@@ -429,7 +429,7 @@ function conf2obj(){
 }
 
 function reload_Soft_Center() {
-	location.href = "/Main_Soft_center.asp";
+	location.href = "/Module_Softcenter.asp";
 }
 
 function update_visibility(r){
